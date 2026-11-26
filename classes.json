@@ -1,0 +1,1494 @@
+{
+  "vocations": [
+    {
+      "id": 1,
+      "name": "Sorcerer",
+      "color": "#a938a3",
+      "title": "O Destruidor Arcano",
+      "description": "Um mago arcano que domina relâmpagos e fogo, causando dano massivo em área. Usa campos mágicos para queimar oponentes, invoca trovões para dizimar inimigos e pode transformar alvos em sapos. Extremamente poderoso, mas frágil, o Sorcerer precisa de estratégia para desferir seu poder destrutivo com precisão.",
+      "passive": {
+        "name": "Arcane Reservoir",
+        "desc": "Ganha (8 por level de classe Sorcerer) de Mana.",
+        "video": "passive_sorcerer"
+      },
+      "iconBody": "sorcerer",
+      "iconVoc": "sorcerer",
+      "stats": {
+        "resistance": 1,
+        "damage": 3,
+        "crowdControl": 2,
+        "utility": 2,
+        "mobility": 2
+      },
+      "combat": {
+        "damageType": "Mágico",
+        "skillBase": "Magic Level",
+        "basicAttackDamage": "10 + 40% AP",
+        "basicAttackRange": "3 SQM"
+      },
+      "skills": [
+        {
+          "name": "Thunder",
+          "words": "##sorcerer_thunder",
+          "desc": "Cria um trovão na posição do cursor de Sorcerer ou no alvo selecionado. Após uma breve recarga, causa dano mágico ao inimigo próximo. Se o alvo morrer, metade do custo de mana deste golpe volta para você. Dano mágico: 40 + 1 por level de classe + 80% Ability Power.",
+          "video": "1_thunder",
+          "level": 10,
+          "slot": "Q",
+          "mana": 30,
+          "cooldown": 2500,
+          "manaRule": {
+            "permil": 30,
+            "legacyCapMult": 1.0
+          }
+        },
+        {
+          "name": "Great Energy Beam",
+          "words": "exevo gran vis lux",
+          "desc": "Invoca um relâmpago de energia causando dano em área. Dano mágico: 85 + (2 por level de classe) + 150% Ability Power. Evolução da habilidade(level de classe 55): aumenta a área de dano.",
+          "video": "3_greatenergybeam",
+          "level": 15,
+          "slot": "E",
+          "mana": 150,
+          "cooldown": 8000,
+          "manaRule": {
+            "permil": 120,
+            "legacyCapMult": 1.0
+          }
+        },
+        {
+          "name": "Magic Field",
+          "words": "##sorcerer_magic_field",
+          "desc": "Cria um quadrado 3x3 de Magic Fire Fields. Dano mágico: Até 200% do Ability Power de acordo com a vida atual do alvo.",
+          "video": "2_magicfield",
+          "level": 20,
+          "slot": "W",
+          "mana": 175,
+          "cooldown": 11000,
+          "manaRule": {
+            "permil": 120,
+            "legacyCapMult": 1.0
+          }
+        },
+        {
+          "name": "Mana Shield",
+          "words": "utamo vita",
+          "desc": "O dano recebido reduz a mana em vez da vida e concede 25% de Omnivamp; com o Mana Shield ativo, o Omnivamp recupera mana. Relançar o feitiço desativa o Mana Shield.",
+          "video": "4_manashield",
+          "level": 25,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 0,
+          "cooldown": 2000
+        },
+        {
+          "name": "Teleport",
+          "words": "##sorcerer_teleport",
+          "desc": "Teletransporta-se a uma curta distância (5 SQM).",
+          "video": "5_teleport",
+          "level": 35,
+          "slot": "SIT2_CONTROL",
+          "mana": 200,
+          "cooldown": 15000,
+          "manaRule": {
+            "permil": 150,
+            "legacyCapMult": 1.0
+          }
+        },
+        {
+          "name": "Transform Frog",
+          "words": "##sorcerer_frog",
+          "desc": "Transforma o alvo em um sapo. Enquanto estiver transformado, ele não poderá atacar e ficará lento. Alguns monstros podem ser imunes a esta magia.",
+          "video": "6_transformfrog",
+          "level": 40,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 150,
+          "cooldown": 20000,
+          "manaRule": {
+            "permil": 120,
+            "legacyCapMult": 1.0
+          }
+        },
+        {
+          "name": "Hell's Core",
+          "words": "exevo gran mas flam",
+          "desc": "Hell's Core libera uma poderosa explosão de fogo, causando dano massivo em uma vasta área ao redor do conjurador. Dano mágico: 300 + (2 por level de classe) + 220% Ability Power.",
+          "video": "ult_hellscore",
+          "level": 30,
+          "slot": "R",
+          "mana": 350,
+          "cooldown": 90000,
+          "manaRule": {
+            "permil": 240,
+            "legacyCapMult": 1.0
+          }
+        }
+      ],
+      "role": "mage",
+      "subrole": "support",
+      "archetype": "battle_mage"
+    },
+    {
+      "id": 2,
+      "name": "Druid",
+      "color": "#00c400",
+      "title": "O Guardião da Natureza",
+      "description": "Mestre da magia vital, o Druid é um curandeiro excepcional, restaurando a vida de aliados com eficiência e mantendo o time no combate. Além de suas poderosas curas, ele pode manipular a natureza para controlar o campo de batalha, criando tempestades gélidas, desacelerando inimigos e se transformando em um ágil rato para escapar de perigos. Com sua conexão única com a terra e os elementos, ele garante que seus aliados resistam até nas batalhas mais difíceis.",
+      "passive": {
+        "name": "Nature's Flow",
+        "desc": "Se você não sofrer dano por 5 segundos, ele recebe (0.7 por level de classe Druid) de poder de habilidade ou dano de ataque (baseado na essência da classe atual). Mana (classe principal): regenera 2% da mana base (500 + 4 por nível) por segundo, no mínimo 20; depois de 3,5 s fora de combate, mais 8% por segundo. Cada ataque básico que acerta devolve 0,5% da mana base. Heal Friend e Mass Healing num aliado ferido em combate devolvem metade do custo de mana.",
+        "video": "passive_druid"
+      },
+      "iconBody": "Druid",
+      "iconVoc": "druid",
+      "stats": {
+        "resistance": 1,
+        "damage": 2,
+        "crowdControl": 2,
+        "utility": 3,
+        "mobility": 2
+      },
+      "combat": {
+        "damageType": "Mágico",
+        "skillBase": "Magic Level",
+        "basicAttackDamage": "10 + 40% AP",
+        "basicAttackRange": "3 SQM"
+      },
+      "skills": [
+        {
+          "name": "Blast Ice",
+          "words": "##druid_explosion",
+          "desc": "Lança uma explosão de gelo em área. Dano mágico: 70 + 1.9 por level de classe + 130% Ability Power. Condição: 20% de chance de Slow por 4s.",
+          "video": "1_blastice",
+          "level": 10,
+          "slot": "Q",
+          "mana": 80,
+          "cooldown": 2900,
+          "manaRule": {
+            "permil": 40,
+            "floor": 30,
+            "ceil": 160
+          }
+        },
+        {
+          "name": "Nature Shield",
+          "words": "##druid_shield",
+          "desc": "Cria um escudo mágico em você por 2.5s. Escudo: 80 + (2 por level de classe) + 60% Ability Power. Enquanto dura, você ganha +80 de velocidade. Ao lançar, tira a lentidão na hora.",
+          "video": "2_natureshield",
+          "level": 15,
+          "slot": "W",
+          "mana": 100,
+          "cooldown": 6000,
+          "manaRule": {
+            "permil": 50,
+            "floor": 40,
+            "ceil": 200
+          }
+        },
+        {
+          "name": "Rat Transformation",
+          "words": "##druid_rat_transformation",
+          "desc": "Transforma-se em rato. Ganha 40% de velocidade de movimento, Ghosting por 6s e Invulnerável por 0.25s. Ghosting: Uma criatura com essa condição ignora a colisão de criaturas, permitindo que elas se movam através de outras criaturas, ou que outras criaturas se movam através delas.",
+          "video": "6_rattransformation",
+          "level": 20,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 100,
+          "cooldown": 20000
+        },
+        {
+          "name": "Plants",
+          "words": "##druid_rooted_plants",
+          "desc": "Cria um arbusto espinhoso que bloqueia 1 SQM por 45 segundos.",
+          "video": "4_plants",
+          "level": 25,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 150,
+          "cooldown": 1000
+        },
+        {
+          "name": "Heal Friend",
+          "words": "exura sio",
+          "desc": "Cura você mesmo ou um amigo próximo. Cura: 150 + (4.5 por level de classe) + 50% de Ability Power. Segure ALT para Auto Cura. Só cura quem você vê: atrás de parede, não pega.",
+          "video": "3_healfriend",
+          "level": 30,
+          "slot": "E",
+          "mana": 100,
+          "cooldown": 3000,
+          "manaRule": {
+            "permil": 60,
+            "floor": 40,
+            "ceil": 200
+          }
+        },
+        {
+          "name": "Mass Healing",
+          "words": "exura gran mas res",
+          "desc": "Cura todos os aliados próximos. Cura: 200 + (6 por level de classe) + 50% de Ability Power. Pode causar dano a mortos-vivos. Só alcança quem você vê: quem está atrás de parede fica de fora.",
+          "video": "5_masshealing",
+          "level": 40,
+          "slot": "SIT2_CONTROL",
+          "mana": 100,
+          "cooldown": 90000,
+          "manaRule": {
+            "permil": 100,
+            "floor": 60,
+            "ceil": 200
+          }
+        },
+        {
+          "name": "Glacial Tempest",
+          "words": "##druid_frost_storm",
+          "desc": "Convoca uma tempestade devastadora de fragmentos de gelo que caem como meteoros, atingindo inimigos em uma área circular de 5x5. Cada alvo pode ser atingido até duas vezes durante a conjuração, espalhando destruição congelante. Efeito: Causa 30 + 1.5 por level de classe + 50% Ability Power de dano mágico aos inimigos na área. Só atinge quem você vê de onde lançou: atrás de parede não leva dano.",
+          "video": "ult_glacialtempest",
+          "level": 35,
+          "slot": "R",
+          "mana": 220,
+          "cooldown": 21000,
+          "manaRule": {
+            "permil": 120,
+            "floor": 90,
+            "ceil": 440
+          }
+        }
+      ],
+      "role": "support",
+      "subrole": "mage",
+      "archetype": "enchanter"
+    },
+    {
+      "id": 3,
+      "name": "Hunter",
+      "color": "#648c2f",
+      "title": "O Caçador Implacável",
+      "description": "Um atirador implacável que domina o campo de batalha com velocidade e precisão. O Hunter marca seus alvos para aumentar seu dano, dispara rajadas de flechas devastadoras e pode se camuflar para surpreender inimigos. Sua passiva concede grande velocidade, permitindo que ele se reposicione constantemente enquanto ataca, tornando-o difícil de alcançar e letal à distância. Com reflexos afiados e mira certeira, ele castiga qualquer inimigo que abaixe a guarda por um instante.",
+      "passive": {
+        "name": "Predator's Instinct",
+        "desc": "Cada ataque básico bem-sucedido concede velocidade de movimento em combate, acumulando até 10 vezes. O bônus com 10 acúmulos cresce com o level de classe Hunter: 20% no level 50, 40% no 100, cerca de 64% no 500 e 75% no 1000. Depois disso continua crescendo a cada level, sem limite, cada vez mais devagar. Mana (classe principal): regenera 1% da mana base (500 + 4 por nível) por segundo, no mínimo 10; depois de 3,5 s fora de combate, mais 1% por segundo. Cada ataque básico que acerta devolve 0,4% da mana base, no máximo uma vez a cada 0,4 s.",
+        "video": "passive_hunter"
+      },
+      "iconBody": "Hunter",
+      "iconVoc": "hunter",
+      "stats": {
+        "resistance": 1,
+        "damage": 3,
+        "crowdControl": 1,
+        "utility": 2,
+        "mobility": 2
+      },
+      "combat": {
+        "damageType": "Físico",
+        "skillBase": "Distance Fighting",
+        "basicAttackDamage": "12 + 80% AD",
+        "basicAttackRange": "5 SQM"
+      },
+      "skills": [
+        {
+          "name": "Eagle's Leap",
+          "words": "##hunter_jump_special_arrow",
+          "desc": "Com um pulo poderoso, o caçador se eleva no ar e dispara uma flecha fortificada que perfura seus inimigos. Dano físico: 14 (+0.8 por level de classe) (+104% AD). Bônus Hunter Mark: Cada marca aumenta o dano em 20% e reduz o cooldown desta habilidade em 1s. Consumir Hunter Mark (6 marcas): Cura o Hunter em 100% do dano causado. PASSIVA: Ataques Básicos acumulam Hunter Mark (máx 6).",
+          "video": "1_eaglesleap",
+          "level": 10,
+          "slot": "Q",
+          "mana": 50,
+          "cooldown": 10000,
+          "manaRule": {
+            "permil": 40
+          }
+        },
+        {
+          "name": "Evasive Step",
+          "words": "##evasive_step",
+          "desc": "O Hunter realiza um passo evasivo rápido de 1 SQM na direção indicada, removendo as condições de Slow e Rooted e aumentando sua velocidade de ataque em 30% por 5s. Fica invulnerável por 0.25 segundos.",
+          "video": "3_hunteroll",
+          "level": 15,
+          "slot": "E",
+          "mana": 150,
+          "cooldown": 6000,
+          "manaRule": {
+            "permil": 80
+          }
+        },
+        {
+          "name": "Camouflage",
+          "words": "##hunter_camouflage",
+          "desc": "O Hunter se transforma em um objeto de camuflagem aleatório por 60 segundos ou até se mover. Objetos possíveis: Arbusto, Pedra ou Caixa. Alguns monstros podem ser imunes a esta habilidade.",
+          "video": "4_camouflage",
+          "level": 25,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 50,
+          "cooldown": 10000,
+          "manaRule": {
+            "permil": 20
+          }
+        },
+        {
+          "name": "Arrow Storm",
+          "words": "##hunter_arrow_storm",
+          "desc": "O Hunter dispara flechas em todas as direções, criando uma chuva devastadora que atinge inimigos em um raio de 3 SQM ao seu redor. O impacto das flechas também empurra os inimigos, abrindo espaço ao redor do Hunter. Dano físico: 50 + 1 por level de classe + 200% Attack Damage.",
+          "video": "6_arrowstorm",
+          "level": 20,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 150,
+          "cooldown": 30000,
+          "manaRule": {
+            "permil": 130
+          }
+        },
+        {
+          "name": "Eagle Eyes",
+          "words": "##hunter_cancelinvisible",
+          "desc": "Revela todas as criaturas dentro de um raio de 5 SQM, incluindo as invisíveis. Além disso, uma criatura aleatória recebe 2 acúmulos de Hunter Mark.",
+          "video": "2_eagleeyes",
+          "level": 35,
+          "slot": "W",
+          "mana": 100,
+          "cooldown": 20000,
+          "manaRule": {
+            "permil": 50
+          }
+        },
+        {
+          "name": "Hunter Trap",
+          "words": "##hunter_trap",
+          "desc": "O Hunter coloca uma armadilha visível no local alvo. A armadilha concede Rooted e 150 de dano físico.",
+          "video": "5_huntertrap",
+          "level": 40,
+          "slot": "SIT2_CONTROL",
+          "mana": 50,
+          "cooldown": 10000,
+          "manaRule": {
+            "permil": 30
+          }
+        },
+        {
+          "name": "Sharpshooter",
+          "words": "##hunter_sharpshooter",
+          "desc": "Com precisão letal, o Hunter se torna um verdadeiro atirador de elite, ganhando 28% de Attack Damage (+1% a cada 50 levels de classe), 1 de Attack Range e a habilidade de causar dano em área com suas flechas por 11 segundos.",
+          "video": "ult_sharpshooter",
+          "level": 30,
+          "slot": "R",
+          "mana": 150,
+          "cooldown": 50000,
+          "manaRule": {
+            "permil": 70
+          }
+        }
+      ],
+      "role": "marksman",
+      "subrole": "marksman",
+      "archetype": "enchanter"
+    },
+    {
+      "id": 4,
+      "name": "Knight",
+      "color": "#ff0000",
+      "title": "O Defensor Valoroso",
+      "description": "Um guerreiro versátil que combina golpes devastadores com resistência sólida. O Knight avança pelo campo de batalha com investidas poderosas, gira sua espada para atacar múltiplos inimigos e pode reduzir a defesa dos adversários com cortes precisos. Embora tenha boas ferramentas defensivas, seu foco está em mesclar ataques em área com impacto direto, punindo inimigos que ousam enfrentá-lo de perto. Seu estilo de jogo é dinâmico, equilibrando agressividade e resistência para dominar a linha de frente.",
+      "passive": {
+        "name": "Fortitude",
+        "desc": "Ganha 10 Pontos de Vida por level de classe Knight. Como subclasse, ganha 5 por level se a classe principal for corpo a corpo e 3 se for à distância. Mana (classe principal, até o level 399): cada ataque básico que acerta devolve 0,9% da mana base (500 + 4 por nível, contando os levels só até o 300) por segundo de intervalo entre ataques, e as habilidades da classe custam menos no começo e chegam ao custo cheio no level 400.",
+        "video": "passive_knight"
+      },
+      "iconBody": "knight",
+      "iconVoc": "knight",
+      "stats": {
+        "resistance": 2,
+        "damage": 2,
+        "crowdControl": 2,
+        "utility": 2,
+        "mobility": 2
+      },
+      "combat": {
+        "damageType": "Físico",
+        "skillBase": "Melee Fighting",
+        "basicAttackDamage": "12 + 100% AD",
+        "basicAttackRange": "1 SQM",
+        "defenseMeleeBonus": "30%"
+      },
+      "skills": [
+        {
+          "name": "Front Sweep",
+          "words": "##knight_front_sweep",
+          "desc": "Um poderoso ataque frontal em uma área de 3 SQM. Dano físico: 30 + (2.2 por level de classe) + 75% Attack Damage.",
+          "video": "1_frontsweep",
+          "level": 10,
+          "slot": "Q",
+          "mana": 50,
+          "cooldown": 6000,
+          "manaRule": {
+            "curve": {
+              "a": 0.45,
+              "b": 0.55,
+              "mainClassOnly": true,
+              "maxFactor": 1.0,
+              "maxLevel": 399,
+              "mref": 2100
+            }
+          }
+        },
+        {
+          "name": "Disorienting Dash",
+          "words": "##knight_confusion_dash",
+          "desc": "O Knight avança 2 SQMs em um ataque frontal, causando confusão por 6 segundos. No level 80 essa habilidade ganha 1 SQM de distância. Dano físico: 45 + (1 por level de classe) + 80% Armor.",
+          "video": "2_disorienteddash",
+          "level": 15,
+          "slot": "W",
+          "mana": 100,
+          "cooldown": 10000,
+          "manaRule": {
+            "curve": {
+              "a": 0.45,
+              "b": 0.55,
+              "mainClassOnly": true,
+              "maxFactor": 1.0,
+              "maxLevel": 399,
+              "mref": 2100
+            }
+          }
+        },
+        {
+          "name": "Whirlwind Throw",
+          "words": "##knight_whirlwind_throw",
+          "desc": "Lança um pequeno furacão contra o alvo. Dano físico: 30 + (1 por level de classe) + 12% da vida perdida do alvo. Caso o alvo seja morto essa habilidade tem seu Cooldown resetado.",
+          "video": "4_whirlwindthrow",
+          "level": 20,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 100,
+          "cooldown": 10000,
+          "manaRule": {
+            "curve": {
+              "a": 0.45,
+              "b": 0.55,
+              "mainClassOnly": true,
+              "maxFactor": 1.0,
+              "maxLevel": 399,
+              "mref": 2100
+            }
+          }
+        },
+        {
+          "name": "Break Armor",
+          "words": "##knight_break_armor",
+          "desc": "Desfere um ataque poderoso que quebra 30% da Armor do alvo por 10s.",
+          "video": "5_breakarmor",
+          "level": 25,
+          "slot": "SIT2_CONTROL",
+          "mana": 150,
+          "cooldown": 10000,
+          "manaRule": {
+            "curve": {
+              "a": 0.45,
+              "b": 0.55,
+              "mainClassOnly": true,
+              "maxFactor": 1.0,
+              "maxLevel": 399,
+              "mref": 2100
+            }
+          }
+        },
+        {
+          "name": "Challenge",
+          "words": "##knight_provoke",
+          "desc": "Sempre que essa habilidade é lançada em combate, todos os monstros ao redor ficarão cheios de raiva e correrão para atacar o Knight, esquecendo seus alvos atuais e não correndo quando estão com pouca vida por 10s. A área tem raio de 3 SQMs. Provoca também até 4 monstros que atacam de longe, à vista e a até 5 SQMs: eles largam a distância e vêm lutar de perto por 8s.",
+          "video": "6_challenge",
+          "level": 35,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 50,
+          "cooldown": 2000,
+          "manaRule": {
+            "curve": {
+              "a": 0.45,
+              "b": 0.55,
+              "mainClassOnly": true,
+              "maxFactor": 1.0,
+              "maxLevel": 399,
+              "mref": 2100
+            }
+          }
+        },
+        {
+          "name": "Protector",
+          "words": "##knight_protector",
+          "desc": "Cria um escudo que absorve 15% (+1% a cada 20 níveis de classe, até 40%) do dano físico e mágico por 10s. Após 2.1s sem receber dano, regenera 25% do HP máximo por segundo. Receber qualquer dano, mesmo que totalmente absorvido, interrompe a regeneração e reinicia o timer de 2.1s.",
+          "video": "3_protector",
+          "level": 40,
+          "slot": "E",
+          "mana": 200,
+          "cooldown": 14000,
+          "manaRule": {
+            "curve": {
+              "a": 0.45,
+              "b": 0.55,
+              "mainClassOnly": true,
+              "maxFactor": 1.0,
+              "maxLevel": 399,
+              "mref": 2100
+            }
+          }
+        },
+        {
+          "name": "Berserk",
+          "words": "##knight_exori",
+          "desc": "O Knight gira rapidamente sua espada em torno de si. Dano físico: 150 + (2 por level de classe) + 20% Attack Damage + 15% do seu HP Máximo. A cada alvo atingido o cooldown dessa habilidade cai 2s.",
+          "video": "ult_berserk",
+          "level": 30,
+          "slot": "R",
+          "mana": 150,
+          "cooldown": 25000,
+          "manaRule": {
+            "curve": {
+              "a": 0.45,
+              "b": 0.55,
+              "mainClassOnly": true,
+              "maxFactor": 1.0,
+              "maxLevel": 399,
+              "mref": 2100
+            }
+          }
+        }
+      ],
+      "role": "tank",
+      "subrole": "fighter",
+      "archetype": "warden"
+    },
+    {
+      "id": 6,
+      "name": "Chainmaster",
+      "color": "#7e1322",
+      "title": "O Mestre das Correntes",
+      "description": "Um guerreiro brutal que domina o uso de correntes no combate. Usa ganchos para puxar inimigos, golpes giratórios para devastar áreas e correntes que enraízam alvos. Sua capacidade de controle e dano explosivo o tornam um assassino implacável, capaz de prender e eliminar inimigos rapidamente.",
+      "passive": {
+        "name": "Bloodforged Chains",
+        "desc": "Seu ataque básico em um inimigo com 20% de vida ou menos rouba 250 + 0,04% da vida máxima dele por nível de Chainmaster, uma vez por alvo. Como classe principal, cada roubo também devolve 3% da sua mana base.",
+        "video": "passive_chainmaster"
+      },
+      "iconBody": "chainmaster",
+      "iconVoc": "chainmaster",
+      "stats": {
+        "resistance": 1,
+        "damage": 3,
+        "crowdControl": 3,
+        "utility": 1,
+        "mobility": 1
+      },
+      "combat": {
+        "damageType": "Físico",
+        "skillBase": "Melee Fighting",
+        "basicAttackDamage": "12 + 100% AD + 35% AD em área",
+        "basicAttackRange": "1 SQM",
+        "defenseMeleeBonus": "30%"
+      },
+      "skills": [
+        {
+          "name": "Cross Chains",
+          "words": "##chainmaster_cross",
+          "desc": "Desfere um golpe poderoso com correntes cruzadas, causando dano físico de 22 + 1.1 por nível de classe + 176% Dano de Ataque.",
+          "video": "1_crosschains",
+          "level": 10,
+          "slot": "Q",
+          "mana": 150,
+          "cooldown": 7000,
+          "manaRule": {
+            "permil": 90,
+            "legacyCapMult": 1.2
+          }
+        },
+        {
+          "name": "Chain Hook",
+          "words": "##chainmaster_hook",
+          "desc": "Lança um gancho preso a correntes que voa em linha reta e puxa o primeiro inimigo atingido, causando dano físico de 110 + 2.2 por nível de classe + 82.5% Dano de Ataque. Monstro pego fica provocado e vem lutar de perto por 3s. Inimigo invulnerável faz o gancho voltar vazio. Alcance: 5 sqm, 6 sqm a partir do nível de classe 200 e 7 sqm a partir do 500. Se o inimigo estiver colado em você, o gancho não puxa: dá um golpe duplo de dano físico (110 + 4.4 por nível de classe + 82.5% Dano de Ataque), que também acerta jogadores onde há PvP, seguindo as regras de PvP do mundo.",
+          "video": "3_chainhook",
+          "level": 15,
+          "slot": "E",
+          "mana": 100,
+          "cooldown": 9000,
+          "manaRule": {
+            "permil": 70,
+            "legacyCapMult": 1.2
+          }
+        },
+        {
+          "name": "Invisibility",
+          "words": "##chainmaster_invisible",
+          "desc": "Fica invisível por 5 segundos, ganhando 45% de velocidade de movimento.",
+          "video": "4_invisibility",
+          "level": 20,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 150,
+          "cooldown": 22000,
+          "manaRule": {
+            "permil": 60,
+            "legacyCapMult": 1.0
+          }
+        },
+        {
+          "name": "Gathering",
+          "words": "##chainmaster_gathering",
+          "desc": "Sacrifica 8% da sua vida máxima para recuperar mana. Em você: 30% da sua mana base (500 + 4 por nível). Num aliado: o maior entre 100 + 300% do seu level de classe e 30% da sua mana base. Não pode ser usado se sua vida estiver abaixo de 30%.",
+          "video": "6_gathering",
+          "level": 25,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 0,
+          "cooldown": 20000
+        },
+        {
+          "name": "Erupting Chains",
+          "words": "##chainmaster_impale",
+          "desc": "Libera uma erupção devastadora de correntes duas vezes, causando dano físico de 110 + 1.1 por nível de classe + 165% Dano de Ataque. Se o alvo for morto, Gathering, Invisibility e Erupting Chains têm o cooldown resetado.",
+          "video": "5_eruptingchains",
+          "level": 30,
+          "slot": "SIT2_CONTROL",
+          "mana": 150,
+          "cooldown": 50000,
+          "manaRule": {
+            "permil": 90,
+            "legacyCapMult": 1.2
+          }
+        },
+        {
+          "name": "Armorbreaker Kick",
+          "words": "##chainmaster_push",
+          "desc": "Avança até 3 sqm até o alvo e desfere um chute poderoso que quebra 30% da armadura dele e o empurra 2 sqm para trás. Se ele bater numa parede, fica atordoado por 1s e sofre 50% de dano extra. Inimigos no caminho do alvo empurrado (ou onde ele cair) são lançados ao ar por 0.5s e sofrem 50% do dano. Use o Chain Hook logo depois para trazê-lo de volta. Dano físico: 33 + 330% do seu Skill Melee.",
+          "video": "2_armorbreakerkick",
+          "level": 35,
+          "slot": "W",
+          "mana": 150,
+          "cooldown": 10000,
+          "manaRule": {
+            "permil": 90,
+            "legacyCapMult": 1.2
+          }
+        },
+        {
+          "name": "Whirling Chains",
+          "words": "##chainmaster_whirlwind",
+          "desc": "Gira correntes ao seu redor, criando um escudo e desferindo 3 golpes à sua volta, cada vez mais fortes: 25%, 50% e 100% da força. Dano físico: 110 + 1.1 por level de classe + 82.5% Dano de Ataque. Escudo: 308 + 2.2 por level de classe + 275% Dano de Ataque.",
+          "video": "ult_whirlingchains",
+          "level": 40,
+          "slot": "R",
+          "mana": 250,
+          "cooldown": 80000,
+          "manaRule": {
+            "permil": 140,
+            "legacyCapMult": 1.2
+          }
+        }
+      ],
+      "role": "assassin",
+      "subrole": "assassin",
+      "archetype": "burst_assassin"
+    },
+    {
+      "id": 8,
+      "name": "Chemist",
+      "color": "#ff2a93",
+      "title": "O Mestre das Poções",
+      "description": "Um alquimista engenhoso que equilibra destruição e suporte com suas criações químicas. Especialista em explosões, curas e buffs, o Chemist pode arremessar poções para fortalecer aliados ou causar dano em área. Sua passiva Auto Potion ativa uma cura automática, permitindo que ele se mantenha no combate por mais tempo. Combinando ciência e estratégia, ele sobrevive a situações extremas enquanto altera o rumo da batalha com suas misturas alquímicas.",
+      "passive": {
+        "name": "Auto Potion",
+        "desc": "Quando sua vida cai para 60% ou menos, você se cura em 50 + 3,5 por nível de Chemist, com recarga de 4 s.",
+        "video": "passive_chemist"
+      },
+      "iconBody": "chemist",
+      "iconVoc": "chemist",
+      "stats": {
+        "resistance": 1,
+        "damage": 3,
+        "crowdControl": 2,
+        "utility": 3,
+        "mobility": 1
+      },
+      "combat": {
+        "damageType": "Mágico",
+        "skillBase": "Magic Level",
+        "basicAttackDamage": "10 + 40% AP",
+        "basicAttackRange": "5 SQM"
+      },
+      "skills": [
+        {
+          "name": "Volatility Shot",
+          "words": "##chemist_potion_shoot",
+          "desc": "Arremessa uma poção explosiva, causando pequeno dano em área e os marcando com Volatilidade Química. Dano mágico: 35 + 0.85 por level de classe + 105% Ability Power. Com um alvo travado, a poção segue o alvo durante o voo; se ele morrer no caminho, ela explode onde ele caiu.",
+          "video": "1_volatilityshot",
+          "level": 10,
+          "slot": "Q",
+          "mana": 75,
+          "cooldown": 4000,
+          "manaRule": {
+            "permil": 40
+          }
+        },
+        {
+          "name": "Chemical Infusion",
+          "words": "##chemist_potion_buff",
+          "desc": "Usa em você ou arremessa uma poção em um aliado, energizando-o com força química e ativando efeitos adicionais contra inimigos marcados com Volatilidade Química. Buff: Aumenta a velocidade de ataque em 30% (+5% para cada 300 de Ability Power) por 15s. Volatilidade Química: Causa dano adicional de 30 + 0.7 por level de classe + 0.08% por level de classe da vida atual do alvo.",
+          "video": "2_chemicalinfusion",
+          "level": 15,
+          "slot": "W",
+          "mana": 100,
+          "cooldown": 30000,
+          "manaRule": {
+            "permil": 60
+          }
+        },
+        {
+          "name": "Mighty Potion",
+          "words": "##chemist_mighty_potion",
+          "desc": "Usa uma poção em você mesmo ou em um aliado próximo curando vida. Cura: 150 + 6 por level de classe + 50% Ability Power.",
+          "video": "3_mightypotion",
+          "level": 20,
+          "slot": "E",
+          "mana": 50,
+          "cooldown": 6000,
+          "manaRule": {
+            "permil": 40
+          }
+        },
+        {
+          "name": "Purify Potion",
+          "words": "##chemist_purify",
+          "desc": "Usa uma poção em você mesmo ou em um aliado próximo curando todos status negativos.",
+          "video": "4_purifypotion",
+          "level": 25,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 50,
+          "cooldown": 6000,
+          "manaRule": {
+            "permil": 30
+          }
+        },
+        {
+          "name": "Haste Potion",
+          "words": "##chemist_haste",
+          "desc": "Bebe uma poção poderosa que deixa o Chemist com haste por 15s. (+140 Speed, +0.5 por level de classe).",
+          "video": "5_hastepotion",
+          "level": 30,
+          "slot": "SIT2_CONTROL",
+          "mana": 100,
+          "cooldown": 40000,
+          "manaRule": {
+            "permil": 40
+          }
+        },
+        {
+          "name": "Stone Skin Potion",
+          "words": "##chemist_stone_skin_potion",
+          "desc": "Bebe uma poção que concede 5 cargas de Pele de Pedra (até 15). Cada golpe físico ou de morte recebido gasta uma carga e tem o dano reduzido em 90%.",
+          "video": "6_stoneskinpotion",
+          "level": 40,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 500,
+          "cooldown": 60000,
+          "manaRule": {
+            "permil": 150
+          }
+        },
+        {
+          "name": "Final Experiment",
+          "words": "##chemist_final_experiment",
+          "desc": "Ativa seu experimento final, causando dano em inimigos marcados com Volatilidade Química. Reseta todos os cooldowns do Chemist e reseta o cooldown do R (ultimate) de todos aliados próximos. Dano: 150 + 2.5 por level de classe + 200% Ability Power.",
+          "video": "ult_finalexperiment",
+          "level": 35,
+          "slot": "R",
+          "mana": 150,
+          "cooldown": 45000,
+          "manaRule": {
+            "permil": 100
+          }
+        }
+      ],
+      "role": "support",
+      "subrole": "mage",
+      "archetype": "enchanter"
+    },
+    {
+      "id": 9,
+      "name": "Golemancer",
+      "color": "#b37100",
+      "title": "O Senhor dos Golems",
+      "description": "Um mestre dos golems, canaliza a força da terra para invocar um guardião de pedra. Pode curar seu golem sacrificando parte de sua própria vida, criar terremotos para dizimar inimigos e provocar monstros para proteger aliados. Com forte resistência e habilidades de manipulação de terreno, o Golemancer é um combatente tático e resiliente.",
+      "passive": {
+        "name": "Earthen Synergy",
+        "desc": "Com um summon ou em party, você regenera mana. Como classe principal: 0,4% da sua mana base (500 + 4 por nível) por segundo + 0,001% por level de classe Golemancer, até 0,9%, e o efeito dura mais 10 s depois que o summon morre ou você sai da party; cada ataque básico que acerta também devolve 0,3% da mana base. Como subclasse: 0,013% da sua mana máxima por level de classe Golemancer, por segundo.",
+        "video": "passive_golemancer"
+      },
+      "iconBody": "golemancer",
+      "iconVoc": "golemancer",
+      "stats": {
+        "resistance": 2,
+        "damage": 2,
+        "crowdControl": 1,
+        "utility": 2,
+        "mobility": 2
+      },
+      "combat": {
+        "damageType": "Mágico",
+        "skillBase": "Magic Level",
+        "basicAttackDamage": "10 + 40% AP",
+        "basicAttackRange": "3 SQM"
+      },
+      "skills": [
+        {
+          "name": "Earth Surge",
+          "words": "##golemancer_healme",
+          "desc": "Invoca uma explosão de energia terrestre no alvo, canalizando essa força primitiva para restaurar sua vida. Efeito: Cura o Golemancer em 80 + 2 por level de classe + 130% Ability Power.",
+          "video": "1_earthsurge",
+          "level": 15,
+          "slot": "Q",
+          "mana": 50,
+          "cooldown": 4000,
+          "manaRule": {
+            "permil": 30
+          }
+        },
+        {
+          "name": "Titanic Strike",
+          "words": "##golemancer_wave",
+          "desc": "Invoca uma onda de rochas causando dano em área. Dano mágico: 55 + (1.3 por level de classe) + 175% Ability Power.",
+          "video": "2_titanicstrike",
+          "level": 20,
+          "slot": "W",
+          "mana": 100,
+          "cooldown": 8000,
+          "manaRule": {
+            "permil": 80
+          }
+        },
+        {
+          "name": "Vital Bond",
+          "words": "##golemancer_heal_golem",
+          "desc": "O Golemancer sacrifica 20% de sua vida para transferir poder vital ao seu Golem, restaurando sua vida com energia mágica. Efeito: Cura o Golem em 80 + 2 por level de classe + 130% Ability Power instantaneamente.",
+          "video": "3_vitalbond",
+          "level": 25,
+          "slot": "E",
+          "mana": 0,
+          "cooldown": 2000
+        },
+        {
+          "name": "Earthquake",
+          "words": "##golemancer_earthquake",
+          "desc": "O Golem concentra a energia da terra e libera um poderoso terremoto, abalando o chão e ferindo inimigos ao redor. Efeito: Causa dano em área igual a 1 por level de classe + 230% Ability Power.",
+          "video": "4_earthquake",
+          "level": 30,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 150,
+          "cooldown": 45000,
+          "manaRule": {
+            "permil": 120
+          }
+        },
+        {
+          "name": "Stoneheart Taunt",
+          "words": "##golemancer_provoke",
+          "desc": "Infunde o Golem com energia mágica para provocar os inimigos ao redor. Todas as criaturas próximas (área 3x3) são forçadas a atacar o Golem, ignorando seus alvos anteriores.",
+          "video": "5_stonehearttaunt",
+          "level": 35,
+          "slot": "SIT2_CONTROL",
+          "mana": 150,
+          "cooldown": 10000,
+          "manaRule": {
+            "permil": 70
+          }
+        },
+        {
+          "name": "Earthen Link",
+          "words": "##golemancer_goto",
+          "desc": "Teletransporta-se a uma curta distância (5 SQM). Se o destino for chão de terra (dirt), o cooldown é reduzido para 3s.",
+          "video": "6_earthenlink",
+          "level": 40,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 150,
+          "cooldown": 45000,
+          "manaRule": {
+            "permil": 80
+          }
+        },
+        {
+          "name": "Forge Golem",
+          "words": "##golemancer_summon",
+          "desc": "Invoca um poderoso Golem de pedra para lutar ao seu lado. Cada level de Golemancer adiciona 11 de vida máxima e faz o Golem crescer de tamanho. Se o Golem acertar um jogador, o cooldown aumenta para 15s. Enquanto o Golem vive, esta habilidade vira Forge Golem - Back, que chama o Golem de volta.",
+          "video": "ult_forgegolem",
+          "level": 10,
+          "slot": "R",
+          "mana": 100,
+          "cooldown": 5000,
+          "manaRule": {
+            "permil": 80
+          }
+        }
+      ],
+      "role": "tank",
+      "subrole": "mage",
+      "archetype": "vanguard"
+    },
+    {
+      "id": 7,
+      "name": "Ninja",
+      "color": "#e11d48",
+      "title": "A Sombra Veloz",
+      "description": "Um assassino ágil que domina a arte das sombras e lâminas gêmeas. Golpeia múltiplos inimigos em sequência tornando-se invulnerável, medita para recuperar vida, canaliza lâminas espirituais de dano verdadeiro e desencadeia seu instinto letal para velocidade máxima. Com shurikens, bombas de fumaça e arremessos aéreos, o Ninja é um combatente implacável e elusivo.",
+      "passive": {
+        "name": "Twin Blades",
+        "desc": "A cada 3º ataque básico, golpeia duas vezes: o golpe extra causa dano físico igual a uma parte do Attack Damage, que cresce com o level de classe Ninja: 28% no level 1, cerca de 54% no 100 e 77% no 300. Depois disso continua crescendo a cada level, sem limite. O golpe extra também cura o Ninja em 7% da vida máxima. Só funciona quando a classe principal é de corpo a corpo. Com classe principal à distância, o Ninja como subclasse não tem nenhum efeito: nem o golpe duplo nem a cura acontecem. Mana (classe principal): regenera 1,2% da mana base (500 + 4 por nível) por segundo, no mínimo 15; depois de 3,5 s fora de combate, mais 3% por segundo. Cada ataque básico que acerta devolve 0,5% da mana base, no máximo uma vez a cada 0,4 s.",
+        "video": "passive_ninja"
+      },
+      "iconBody": "ninja",
+      "iconVoc": "ninja",
+      "stats": {
+        "resistance": 1,
+        "damage": 3,
+        "crowdControl": 2,
+        "utility": 1,
+        "mobility": 3
+      },
+      "combat": {
+        "damageType": "Físico",
+        "skillBase": "Melee",
+        "basicAttackDamage": "12 + 100% AD",
+        "basicAttackRange": "1 SQM"
+      },
+      "skills": [
+        {
+          "name": "Shadow Slash",
+          "words": "##ninja_shadow_slash",
+          "desc": "O Ninja se torna invulnerável e golpeia rapidamente até 4 inimigos próximos, causando 70 (+1 por nível de Ninja) (+60% AD) de dano físico. Pode re-golpear o mesmo alvo com 25% de todo o dano se não houver outros alvos disponíveis. Reaparece adjacente ao alvo primário; se for um monstro, ele fica provocado e luta de perto por 3s. Ataques básicos reduzem o cooldown em 0.5 segundo. Se o alvo primário morrer durante a habilidade, o Ninja retorna à posição original.",
+          "video": "##ninja_shadow_slash",
+          "level": 10,
+          "slot": "Q",
+          "mana": 70,
+          "cooldown": 18000,
+          "manaRule": {
+            "permil": 30
+          }
+        },
+        {
+          "name": "Meditation",
+          "words": "##ninja_meditation",
+          "desc": "O Ninja canaliza por até 4 segundos, curando 85 (+0.6 por nível de Ninja) (+20% AP) por segundo. A cura aumenta em até 100% baseado na vida faltando. Não custa mana para começar, mas custa 6% da sua mana base (500 + 4 por nível) por segundo; sem mana para o primeiro segundo, não começa. Cancelado ao mover. Reseta o timer de auto-ataque ao encerrar.",
+          "video": "##ninja_meditation",
+          "level": 20,
+          "slot": "W",
+          "mana": 40,
+          "cooldown": 10000,
+          "manaRule": {
+            "fixed": 0,
+            "requiredPermil": 60
+          }
+        },
+        {
+          "name": "Spirit Blades",
+          "words": "##ninja_spirit_blades",
+          "desc": "Por 5 segundos, os ataques básicos do Ninja causam 30 (+0.3 por nível de Ninja) (+25% AD) de dano verdadeiro adicional por golpe. Pode ser ativado durante o Shadow Slash.",
+          "video": "##ninja_spirit_blades",
+          "level": 15,
+          "slot": "E",
+          "mana": 0,
+          "cooldown": 14000
+        },
+        {
+          "name": "Lethal Instinct",
+          "words": "##ninja_lethal_instinct",
+          "desc": "O Ninja remove todos os slows e ganha 35% (+0.04% por nível de Ninja, máximo 55%) de velocidade de movimento, 45% (+0.05% por nível, máximo 65%) de velocidade de ataque e imunidade a slow por 15 segundos. Eliminar um monstro forte (power 8+) ou player estende a duração em 2 segundos, até 21 segundos, e reduz os cooldowns de Shadow Slash, Meditation e Spirit Blades em 40%.",
+          "video": "##ninja_lethal_instinct",
+          "level": 30,
+          "slot": "R",
+          "mana": 100,
+          "cooldown": 70000,
+          "manaRule": {
+            "permil": 60
+          }
+        },
+        {
+          "name": "Smoke Bomb",
+          "words": "##ninja_smoke_bomb",
+          "desc": "Arremessa uma bomba de fumaça na área alvo, cegando inimigos em uma área 3x3 por 4 segundos. Re-aplica o efeito de cegueira periodicamente.",
+          "video": "##ninja_smoke_bomb",
+          "level": 35,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 50,
+          "cooldown": 32000,
+          "manaRule": {
+            "permil": 30
+          }
+        },
+        {
+          "name": "Throwing Shurikens",
+          "words": "##ninja_throwing_shurikens",
+          "desc": "Arremessa uma shuriken em linha reta na direção do alvo. Causa 50 (+1 por nível de Ninja) (+70% AD) de dano físico ao primeiro inimigo atingido.",
+          "video": "##ninja_throwing_shurikens",
+          "level": 40,
+          "slot": "SIT2_CONTROL",
+          "mana": 30,
+          "cooldown": 15000,
+          "manaRule": {
+            "permil": 30
+          }
+        },
+        {
+          "name": "Air Throw",
+          "words": "##ninja_air_throw",
+          "desc": "Arremessa no ar todos os inimigos adjacentes por 0.5s. Causa 30 (+0.6 por nível de Ninja) (+60% AD) de dano físico.",
+          "video": "##ninja_air_throw",
+          "level": 45,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 40,
+          "cooldown": 18000,
+          "manaRule": {
+            "permil": 30
+          }
+        }
+      ],
+      "role": "assassin",
+      "subrole": "fighter",
+      "archetype": "skirmisher"
+    },
+    {
+      "id": 5,
+      "name": "Lancer",
+      "title": "O Lanceiro Indômito",
+      "description": "Um duelista mergulhador de lança reforjado à imagem de um dragão implacável. Sua lança alcança 2 tiles em linha reta, e a estocada atravessa quem estiver no caminho, causando metade do dano a quem fica entre ele e o alvo. O Lancer escolhe um único alvo e nunca o solta: sustenta a si mesmo a cada terceiro golpe, mergulha com o Audacious Charge e, uma vez fixado, pune tudo ao seu redor. Gira o Crescent Guard para dispersar multidões enquanto ignora todos exceto o alvo escolhido, engana a morte por completo com uma runa dracônica e salta do céu para despencar de volta ao combate. Um mergulhador físico de sustentação que só fica mais perigoso quanto mais tempo permanece na luta.",
+      "role": "fighter",
+      "subrole": "assassin",
+      "archetype": "diver",
+      "stats": {
+        "resistance": 2,
+        "damage": 3,
+        "crowdControl": 3,
+        "utility": 1,
+        "mobility": 3
+      },
+      "combat": {
+        "damageType": "Físico",
+        "skillBase": "Melee Fighting",
+        "basicAttackDamage": "12 + 100% AD",
+        "basicAttackRange": "2 SQM",
+        "defenseMeleeBonus": "30%"
+      },
+      "passive": {
+        "name": "Determinação do Lanceiro",
+        "desc": "A cada 3 golpes desferidos em sequência — contando ataques básicos e a estocada do Vento Vira Relâmpago — o Lanceiro acerta um golpe extra de dano físico (20 + 0.7 por level de classe + 30% do Dano de Ataque) e recupera 45% desse dano em vida contra monstros (30% contra outros jogadores). A contagem zera se ele ficar mais de 4s sem atacar. Cada ataque básico também deixa o alvo Desafiado. Enquanto a Fúria do Lanceiro está ativa, o golpe acontece a cada ataque. Mana (classe principal): regenera 1,6% da mana base (500 + 4 por nível) por segundo; depois de 3,5 s fora de combate, mais 3% por segundo. Ímpeto: cada ataque básico que acerta devolve 0,6% da mana base (no máximo uma vez a cada 0,4 s), e o Vento Vira Relâmpago, a Investida Audaz e o Dragon Leap devolvem 0,6% uma vez por lançamento quando acertam. Contra jogadores, metade."
+      },
+      "skills": [
+        {
+          "name": "Three Talon Strike",
+          "words": "##lancer_three_talon",
+          "desc": "O Lanceiro carrega a lança e empodera seus próximos 3 ataques básicos. Por até 6s, cada ataque empoderado causa dano físico adicional (25 + 0.85 por level de classe + 40% do Dano de Ataque), aumenta a velocidade de ataque e adianta a recarga das outras habilidades. O último ataque empoderado lança o alvo ao ar por 0.45s.",
+          "level": 10,
+          "slot": "Q",
+          "mana": 40,
+          "cooldown": 9000,
+          "manaRule": {
+            "permil": 50
+          }
+        },
+        {
+          "name": "Wind Becomes Lightning",
+          "words": "##lancer_wind_lightning",
+          "desc": "O Lanceiro desfere uma varredura à frente e, logo em seguida, uma estocada em linha que atravessa todos os inimigos à sua frente. A varredura causa dano físico (20 + 0.7 por level de classe + 40% do Dano de Ataque) e a estocada é mais forte (40 + 1.1 por level de classe + 70% do Dano de Ataque); ambas reduzem a velocidade dos atingidos em 50% por 1.5s (2.2s durante o Lancer's Fury). O primeiro inimigo atingido pela estocada fica Desafiado por 3s.",
+          "level": 15,
+          "slot": "W",
+          "mana": 45,
+          "cooldown": 9000,
+          "manaRule": {
+            "permil": 50
+          }
+        },
+        {
+          "name": "Audacious Charge",
+          "words": "##lancer_audacious_charge",
+          "desc": "O Lanceiro avança sobre um inimigo escolhido e aterrissa ao seu lado, causando dano físico em área (70 + 1.5 por level de classe + 60% do Poder Mágico) e reduzindo a velocidade dos atingidos em 30% por 0.5s. Logo após a investida, ataca 30% mais rápido por 5s. O avanço alcança mais longe contra um alvo Desafiado (até 5 tiles, contra 3). Marca o alvo como Desafiado; se for um monstro, ele também fica provocado e luta de perto por 3s.",
+          "level": 20,
+          "slot": "E",
+          "mana": 55,
+          "cooldown": 12000,
+          "manaRule": {
+            "permil": 70
+          }
+        },
+        {
+          "name": "Crescent Guard",
+          "words": "##lancer_crescent_guard",
+          "desc": "O Lanceiro gira a lança ao seu redor, preso no lugar por um instante. O giro causa dano físico a todos por perto — 90 + 1.1 por level de classe + 60% do Dano de Ataque e mais 8% da vida atual de cada alvo (até 1.5× o seu Dano de Ataque, no mínimo 100) — e empurra 2 tiles para trás e atordoa por 0.75s todos os inimigos, exceto o alvo Desafiado. Por 4s, o Lanceiro ignora todo o dano de inimigos a mais de 2 tiles de distância; apenas quem está por perto — e o alvo Desafiado — consegue feri-lo.",
+          "level": 40,
+          "slot": "R",
+          "mana": 100,
+          "cooldown": 75000,
+          "manaRule": {
+            "permil": 120
+          }
+        },
+        {
+          "name": "Lancer's Fury",
+          "words": "##lancer_fury",
+          "desc": "Por 6s, o Lanceiro assume uma postura de guerra que não causa dano por si só. Enquanto dura, o Wind Becomes Lightning reduz a velocidade por mais tempo e o golpe extra da Determinação do Lanceiro passa a acontecer a cada ataque, não a cada três.",
+          "level": 25,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 40,
+          "cooldown": 18000,
+          "manaRule": {
+            "permil": 50
+          }
+        },
+        {
+          "name": "Draconic Rebirth",
+          "words": "##lancer_draconic_rebirth",
+          "desc": "O Lanceiro grava em si mesmo uma runa dracônica por 15s. Se sofrer um golpe fatal nesse período, ele engana a morte — fica em estase por 1.5s e renasce com 35% da vida (50% se a Determinação do Lanceiro estiver ativa). Só pode ser usado em si mesmo.",
+          "level": 30,
+          "slot": "SIT2_CONTROL",
+          "mana": 250,
+          "cooldown": 90000,
+          "manaRule": {
+            "permil": 180,
+            "ceil": 300
+          }
+        },
+        {
+          "name": "Dragon Leap",
+          "words": "##lancer_dragon_leap",
+          "desc": "O Lanceiro salta para o céu, ficando intocável por um instante, e despenca sobre o ponto mirado. No impacto, desfere o golpe mais poderoso de seu arsenal, causando dano físico em área 3x3 (300 + 3.5 por level de classe + 150% do Dano de Ataque) e lançando ao ar por 0.6s todos os inimigos atingidos. Uma sombra crescente no chão anuncia onde a lança vai cair, dando aos inimigos a chance de escapar.",
+          "level": 35,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 100,
+          "cooldown": 150000,
+          "manaRule": {
+            "permil": 120
+          }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Firecaller",
+      "title": "O Toque Abrasador",
+      "description": "Piromancia em sua forma mais pura. Lança projéteis flamejantes que incendeiam alvos, espalha chamas pelo chão que queimam continuamente e desencadeia explosões devastadoras em inimigos já em combustão. Feitiços se potencializam mutuamente — cada alvo em chamas vira combustível para destruição ainda maior. Com o Inferno, um campo de brasas ao seu redor, transforma grupos inteiros de inimigos em cinzas.",
+      "role": "mage",
+      "subrole": "support",
+      "archetype": "burst_mage",
+      "stats": {
+        "resistance": 1,
+        "damage": 3,
+        "crowdControl": 2,
+        "utility": 2,
+        "mobility": 1
+      },
+      "combat": {
+        "damageType": "Mágico",
+        "skillBase": "Magic Level",
+        "basicAttackDamage": "10 + 30% AP",
+        "basicAttackRange": "3 SQM"
+      },
+      "passive": {
+        "name": "Chama Persistente",
+        "desc": "Habilidades aplicam Chama Persistente por 4 segundos. Como subclasse, quem aplica a marca são seus ataques básicos, com potência reduzida. Cada stack causa dano de fogo por segundo (13,8 + 0,23 por level de classe + 6,9% do Ability Power); ao atingir 3 stacks, a marca detona e causa dano de fogo em área (46 + 0,69 por level de classe + 28,75% do Ability Power + 4,6% da vida máxima do alvo). Como subclasse, esses valores caem pela metade. Mana (classe principal): regenera 1,6% da mana base (500 + 4 por nível) por segundo, no mínimo 15. Cada detonação da sua Chama Persistente devolve 1,5% da mana base, no máximo uma vez a cada 0,5 s."
+      },
+      "skills": [
+        {
+          "name": "Flame Lance",
+          "words": "##firecaller_sear",
+          "desc": "Dispara um projétil de fogo em linha reta ou no alvo selecionado. Dano mágico: 57.5 + 1.15 por level de classe + 63.25% AP. Se o alvo já estiver em Chama Persistente, atordoa por 1.2s. Aplica 1 stack de Chama Persistente.",
+          "level": 10,
+          "slot": "Q",
+          "mana": 40,
+          "cooldown": 5000,
+          "manaRule": {
+            "permil": 36
+          }
+        },
+        {
+          "name": "Flame Pillar",
+          "words": "##firecaller_pillar",
+          "desc": "Cria um pilar de chamas na posição alvo após 450ms. Dano mágico: 63.25 + 1.38 por level de classe + 69% AP em área. Alvos em Chama Persistente recebem +35% de dano. Fornalha Interna (Inner Furnace) aumenta o raio de 1 para 2.",
+          "level": 15,
+          "slot": "W",
+          "mana": 60,
+          "cooldown": 7000,
+          "manaRule": {
+            "permil": 58
+          }
+        },
+        {
+          "name": "Conflagration",
+          "words": "##firecaller_conflagration",
+          "desc": "Incendeia um alvo e espalha fogo aos inimigos próximos. Dano mágico no alvo: 51.75 + 1.15 por level de classe + 51.75% AP. Inimigos próximos recebem 50% do dano e 1 stack de Chama Persistente. Fornalha Interna (Inner Furnace) aumenta o splash para 100% e o raio de propagação de 1 para 2.",
+          "level": 20,
+          "slot": "E",
+          "mana": 50,
+          "cooldown": 9000,
+          "manaRule": {
+            "permil": 45
+          }
+        },
+        {
+          "name": "Pyroclasm",
+          "words": "##firecaller_pyroclasm",
+          "desc": "Lança uma bola de fogo que quica entre inimigos. Cada salto causa 69 + 1.15 por level de classe + 46% AP de dano mágico e aplica 1 stack de Chama Persistente. Começa com 5 saltos, ganha +1 a cada 25 levels de Firecaller, até 8. Reacertos perdem 15% de dano por repetição.",
+          "level": 35,
+          "slot": "R",
+          "mana": 100,
+          "cooldown": 90000,
+          "manaRule": {
+            "permil": 130
+          }
+        },
+        {
+          "name": "Inner Furnace",
+          "words": "##firecaller_inner_furnace",
+          "desc": "Ativa Fornalha Interna por 8s. Enquanto ativa, Flame Lance, Flame Pillar e Conflagration consomem 1 stack própria de Chama Persistente ao acertar para liberar seus efeitos empoderados.",
+          "level": 25,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 45,
+          "cooldown": 30000,
+          "manaRule": {
+            "permil": 50
+          }
+        },
+        {
+          "name": "Ash Wall",
+          "words": "##firecaller_ash_wall",
+          "desc": "Cria uma linha de fogo por 3s. Inimigos na muralha sofrem 13.8 + 0.23 por level de classe + 11.5% AP de dano mágico por tick, recebem Slow por 1.2s e ganham 1 stack de Chama Persistente.",
+          "level": 30,
+          "slot": "SIT2_CONTROL",
+          "mana": 70,
+          "cooldown": 22000,
+          "manaRule": {
+            "permil": 80
+          }
+        },
+        {
+          "name": "Inferno",
+          "words": "##firecaller_inferno",
+          "desc": "Desperta o Firecaller por 6s, criando um campo de brasas em raio 2 ao redor dele. Cada tick causa 28.75 + 0.35 por level de classe + 23% AP de dano de fogo e aplica Chama Persistente. Durante Inferno, Chama Persistente detona com 2 stacks.",
+          "level": 40,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 120,
+          "cooldown": 180000,
+          "manaRule": {
+            "permil": 160
+          }
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Archer",
+      "title": "A Mira Letal",
+      "description": "Especialista em eliminar alvos prioritários com precisão cirúrgica. Dotado de olhar analítico, encontra brechas na defesa inimiga e ignora parte da resistência física. Reposiciona-se com Bolt Roll, empala inimigos contra paredes com Impaling Bolt e marca alvos com projéteis que explodem ao terceiro acerto, tirando parte da vida máxima. Ao entrar em Busca Mortal (Death's Pursuit), seu poder de ataque dispara e cada abate estende a fúria. Frágil mas devastador, transforma posicionamento perfeito em execuções implacáveis.",
+      "role": "marksman",
+      "subrole": "assassin",
+      "archetype": "enchanter",
+      "stats": {
+        "resistance": 1,
+        "damage": 3,
+        "crowdControl": 2,
+        "utility": 2,
+        "mobility": 2
+      },
+      "combat": {
+        "damageType": "Físico",
+        "skillBase": "Distance Fighting",
+        "basicAttackDamage": "12 + 80% AD",
+        "basicAttackRange": "4 SQM"
+      },
+      "passive": {
+        "name": "Exploit Weakness",
+        "desc": "Auto-attacks ignoram parte da resistência física do alvo: 3% + 0.05% por level de classe. Mana (classe principal): regenera 1% da mana base (500 + 4 por nível) por segundo; depois de 3,5 s fora de combate, a mana volta a 4% da mana base por segundo no total. Cada acerto do ataque básico, do Impaling Bolt, do Rain of Bolts e do Charged Shot devolve 0,3% da mana base, no máximo uma vez a cada 0,4 s somando todos."
+      },
+      "skills": [
+        {
+          "name": "Bolt Roll",
+          "words": "##archer_bolt_roll",
+          "desc": "O Archer rola 2 tiles na direção indicada, ficando brevemente invulnerável. O próximo auto-attack causa dano físico bônus: 30 + 1 por level de classe + 70% AD. Se Busca Mortal (Death's Pursuit) estiver ativo, concede 0.75s de invisibilidade após rolar (sem poder atacar durante a invisibilidade).",
+          "level": 10,
+          "slot": "Q",
+          "mana": 30,
+          "cooldown": 3000,
+          "manaRule": {
+            "permil": 20,
+            "floor": 10
+          }
+        },
+        {
+          "name": "Rending Bolts",
+          "words": "##archer_rending_bolts",
+          "desc": "Sempre ativa: auto-attacks marcam o alvo com Rending Bolts. Na 3ª marca no MESMO alvo, os projéteis explodem causando true damage: 50 + 1 por level de classe + 8% do HP máximo do alvo. Trocar de alvo reseta as marcas.",
+          "level": 5,
+          "slot": "W",
+          "mana": 0,
+          "cooldown": 1000
+        },
+        {
+          "name": "Impaling Bolt",
+          "words": "##archer_impaling_bolt",
+          "desc": "O Archer dispara um projétil perfurante que empurra o alvo 3 tiles para trás. Causa dano físico: 80 + 1.5 por level de classe + 80% AD. Se o alvo colidir com parede ou obstáculo, fica empalado e atordoado por 1.5s, recebendo dano adicional: 100 + 50% AD.",
+          "level": 15,
+          "slot": "E",
+          "mana": 80,
+          "cooldown": 16000,
+          "manaRule": {
+            "permil": 60,
+            "floor": 10
+          }
+        },
+        {
+          "name": "Death's Pursuit",
+          "words": "##archer_deaths_pursuit",
+          "desc": "O Archer entra em Busca Mortal por 12 segundos, ganhando +30% de dano de ataque e +1 de alcance de ataque. Enquanto ativo, Bolt Roll concede 0.75s de invisibilidade após rolar (sem poder atacar durante a invisibilidade). Eliminar monstro forte (power 8+) ou player estende a duração em 3 segundos.",
+          "level": 30,
+          "slot": "R",
+          "mana": 100,
+          "cooldown": 60000,
+          "manaRule": {
+            "permil": 80,
+            "floor": 10
+          }
+        },
+        {
+          "name": "Crossbow Guard",
+          "words": "##archer_crossbow_guard",
+          "desc": "O Archer entra em postura defensiva, ganhando um escudo que absorve 80 + 1.5 por level de classe + 2x skill de Defense de dano por 4.5s.",
+          "level": 25,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 60,
+          "cooldown": 16000,
+          "manaRule": {
+            "permil": 30,
+            "floor": 10
+          }
+        },
+        {
+          "name": "Rain of Bolts",
+          "words": "##archer_rain_of_bolts",
+          "desc": "O Archer dispara uma chuva de bolts em cone, causando dano físico baseado no Attack Damage. O dano escala com o level de classe: 30% AD no level 1, até 100% AD no level 150. Acima do level 150, o dano continua crescendo, mas em ritmo menor.",
+          "level": 35,
+          "slot": "SIT2_CONTROL",
+          "mana": 90,
+          "cooldown": 22000,
+          "manaRule": {
+            "permil": 70,
+            "floor": 10
+          }
+        },
+        {
+          "name": "Charged Shot",
+          "words": "##archer_charged_shot",
+          "desc": "O Archer concentra por 3 segundos e dispara um tiro carregado devastador no alvo. Causa dano físico massivo: 150 + 3 por level de classe + 250% AD. Cancelado ao mover.",
+          "level": 40,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 80,
+          "cooldown": 18000,
+          "manaRule": {
+            "permil": 80,
+            "floor": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Gravewarden",
+      "title": "O Pastor das Almas",
+      "description": "Um bruxo-coveiro corpo a corpo que transforma a morte do inimigo em recurso: cada corpo vira túmulo, cada túmulo vira um Ghoul, e o exército obedece à sua marca. Fraco no 1x1; assustador com o cemitério cheio.",
+      "stats": {
+        "resistance": 2,
+        "damage": 2,
+        "crowdControl": 2,
+        "utility": 3,
+        "mobility": 1
+      },
+      "combat": {
+        "damageType": "Físico",
+        "basicAttackRange": "1 SQM",
+        "skillBase": "Melee",
+        "basicAttackDamage": "12 + 100% AD"
+      },
+      "skills": [
+        {
+          "name": "Last Rites",
+          "words": "##gravewarden_last_rites",
+          "desc": "Empodera o próximo ataque básico: causa dano físico bônus de 20 + 1 por level de classe + 40% do AD, cura você em 45 + 0.8 por level de classe + 15% do AP (mais 8% por Ghoul vivo, contando até 4 Ghouls) e deixa um túmulo no local do golpe. O ataque empoderado fica pronto por 4s. Cada ataque básico reduz o cooldown desta habilidade em 0.5s. Passiva (Pastor das Almas): quando um monstro morre perto de você surge um túmulo, que pode ser levantado como Ghoul frágil. Túmulos: surgem quando um monstro morre a até 4 sqm de você; até 8 ao mesmo tempo (o mais antigo dá lugar ao novo), e cada um some sozinho em 30s. Cada Ghoul vive 10s; até 4 ao mesmo tempo, 6 com a Donzela da Névoa viva.",
+          "level": 10,
+          "slot": "Q",
+          "mana": 55,
+          "cooldown": 8000,
+          "manaRule": {
+            "permil": 40
+          }
+        },
+        {
+          "name": "Dark Procession",
+          "words": "##gravewarden_dark_procession",
+          "desc": "Ergue um anel de lápides ao redor da posição-alvo, com uma abertura, por 4s. Barra a passagem de monstros e, onde há PvP, de outros jogadores; você sempre atravessa. Não causa dano.",
+          "level": 20,
+          "slot": "W",
+          "mana": 70,
+          "cooldown": 13000,
+          "manaRule": {
+            "permil": 40
+          }
+        },
+        {
+          "name": "Mourning Mist",
+          "words": "##gravewarden_mourning_mist",
+          "desc": "Lança uma poça de névoa que marca os inimigos atingidos por 4s: eles recebem +10% de dano, ficam 35% mais lentos e são revelados. Todo o seu exército corre até o alvo e até 2 Ghouls se levantam de túmulos próximos.",
+          "level": 15,
+          "slot": "E",
+          "mana": 60,
+          "cooldown": 12000,
+          "manaRule": {
+            "permil": 40
+          }
+        },
+        {
+          "name": "Eulogy of the Isles",
+          "words": "##gravewarden_eulogy",
+          "desc": "Invoca a Donzela da Névoa, que luta ao seu lado e eleva o limite do seu exército. Em combate, ela levanta um Ghoul de um túmulo próximo a cada 8s. Cada golpe da Donzela causa 4% do seu AD + 1 por level de Gravewarden; o de cada Ghoul, 50% disso. Marca da Donzela: quem ela golpeia fica marcado por 4s, e cada golpe dela renova a marca. Seus ataques básicos no alvo marcado causam dano de Morte extra igual a 3% da vida máxima dele, até 40 + 1 por level de Gravewarden + 10% do seu AD. Enquanto ela vive, esta habilidade vira Command the Maiden, que leva a Donzela para perto do ponto ou alvo apontado e foca todo o exército nele.",
+          "level": 10,
+          "slot": "R",
+          "mana": 100,
+          "cooldown": 6000,
+          "manaRule": {
+            "permil": 80
+          }
+        },
+        {
+          "name": "Soul Harvest",
+          "words": "##gravewarden_soul_harvest",
+          "desc": "Colhe as almas de até 4 túmulos seus a até 3 sqm, começando pelos mais antigos. Cada túmulo colhido se desfaz sem levantar Ghoul e restaura vida (35 + 0.7 por level de classe + 11% do AP) e 7% da sua mana base (500 + 4 por nível). É a Colheita de Almas citada na passiva Legião.",
+          "level": 30,
+          "slot": "SIT1_EMERGENCY",
+          "mana": 0,
+          "cooldown": 20000
+        },
+        {
+          "name": "Shallow Grave",
+          "words": "##gravewarden_shallow_grave",
+          "desc": "Enfia as mãos no solo e cava até 4 túmulos ao seu redor, ficando intocável por um instante. Cada túmulo seu a até 1 sqm (inclusive os que já existiam, até 6) drena vida para você: 25 + 0.5 por level de classe + 8% do AP por túmulo. Os túmulos continuam no chão e ainda podem ser levantados como Ghouls.",
+          "level": 35,
+          "slot": "SIT2_CONTROL",
+          "mana": 80,
+          "cooldown": 18000,
+          "manaRule": {
+            "permil": 40
+          }
+        },
+        {
+          "name": "Great Awakening",
+          "words": "##gravewarden_awakening",
+          "desc": "Ergue os braços e levanta de uma só vez todos os seus túmulos a até 7 sqm como Ghouls, ignorando o limite normal do exército (no máximo 8 Ghouls). Por 5s, os Ghouls e a Donzela da Névoa entram em fúria: causam +30% de dano e se movem 20% mais rápido.",
+          "level": 45,
+          "slot": "SIT3_OPPORTUNITY",
+          "mana": 150,
+          "cooldown": 90000,
+          "manaRule": {
+            "permil": 120
+          }
+        }
+      ],
+      "role": "fighter",
+      "subrole": "tank",
+      "archetype": "juggernaut",
+      "passive": {
+        "name": "Legião",
+        "desc": "Cercado da sua legião você resiste mais: cada aliado ou invocação por perto concede armadura e resistência mágica, até um limite. Mana (classe principal): regenera 0,9% da mana base (500 + 4 por nível) por segundo; depois de 3,5 s fora de combate, mais 1,5% por segundo. Cada ataque básico que acerta devolve 0,5% da mana base, no máximo uma vez a cada 0,4 s. A Colheita de Almas devolve 7% da mana base por túmulo, até 4."
+      }
+    }
+  ]
+}

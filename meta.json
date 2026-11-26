@@ -1,0 +1,24 @@
+{
+ "updatedAt": "2026-11-26T11:19-03:00",
+ "counts": {
+  "monsters": 219,
+  "items": 2415,
+  "cards": 246,
+  "classes": 12,
+  "dishes": 109,
+  "ingredients": 172,
+  "legendary": 118
+ },
+ "changes": {
+  "monsters": [],
+  "items": 0,
+  "itemsSample": [],
+  "cards": [],
+  "classes": [],
+  "dishes": [],
+  "ingredients": [],
+  "legendary": [],
+  "legendaryChanged": []
+ },
+ "failed": []
+}
