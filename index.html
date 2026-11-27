@@ -1061,8 +1061,10 @@
     <label class="bld-chk"><input type="checkbox" id="bldGrow"> Só peças que crescem por nível nos atributos marcados</label>
     <div class="section-title">Caçada</div>
     <div class="bld-grid"><label class="bld-chk"><input type="radio" name="bldHunt" value="solo" checked> Solo</label><label class="bld-chk"><input type="radio" name="bldHunt" value="group"> Grupo</label></div>
-    <div class="section-title">Resistências</div>
+    <div class="section-title">Resistências (dano do elemento)</div>
     <div class="bld-grid" id="bldRes"></div>
+    <div class="section-title">Imunidades a efeitos (Campo de Fogo = queimadura, não é o dano de fogo)</div>
+    <div class="bld-grid" id="bldImm"></div>
     <div class="section-title">Raça de monstro</div>
     <div class="bld-grid" id="bldRaces"></div>
     <details><summary class="section-title" style="cursor:pointer">Regras de pontuação</summary><div id="bldRules"></div></details>
@@ -3315,7 +3317,7 @@ const BLD_CLS = {
   Ninja: { dmg: "phys", ranged: false, core: ["ad", "as", "crit", "steal"], roles: ["assassin", "fighter"], def: ["ad", "as", "crit"] },
   Chainmaster: { dmg: "phys", ranged: false, core: ["ad", "pen", "ah"], roles: ["assassin"], def: ["ad", "pen", "ah"] },
 };
-const BLD_K = { core: 0.25, boost: 0.3, item: 10, role: 1.5, cardFlat: 3, raceRed: 0.5, elemRed: 1, aoe: 0.5, pctHpMp: 0.5 };
+const BLD_K = { immun: 15, core: 0.25, boost: 0.3, item: 10, role: 1.5, cardFlat: 3, raceRed: 0.5, elemRed: 1, aoe: 0.5, pctHpMp: 0.5 };
 const BLD_HUNT = { solo: ["hp", "reghp", "steal", "armor", "mr"], group: ["ah", "heal", "tenacity", "armor", "mr"] };
 const BA = {
   crit: { l: "Chance de crítico", leg: ["criticalStrikePercent"], card: ["PLAYERATTR_CRITICAL_STRIKE_PERCENT"] },
@@ -3339,8 +3341,10 @@ const BA = {
 };
 const BLD_ORDER = Object.keys(BA);
 const BA_CARD = {}; BLD_ORDER.forEach(id => BA[id].card.forEach(a => { BA_CARD[a] = id; }));
+// imunidades a efeitos (campo "condition" das cartas). Queimadura e Envenenamento são efeitos, separados da resistência ao dano do elemento
+const BLD_IMM = [["Burning", "Queimadura"], ["Poison", "Envenenamento"], ["Root", "Enraizamento"], ["Silence", "Silêncio"], ["Slow", "Lentidão"], ["Sleep", "Sono"], ["Confusion", "Confusão"], ["Stun", "Atordoamento"], ["Push", "Empurrão"], ["TerrainSlow", "Lentidão de terreno"]];
 const BLD_RES = [["Ice", "Gelo"], ["Fire", "Fogo"], ["Energy", "Energia"], ["Death", "Morte"], ["Earth", "Terra"], ["Poison", "Veneno"]];
-let BLD = { ownedLeg: new Set(), ownedUltra: null, ready: false, cls: "Hunter", sub: "", lvl: 250, own: 500, grow: false, hunt: "solo", attrs: new Set(), res: new Set(), races: new Set() };
+let BLD = { ownedLeg: new Set(), ownedUltra: null, ready: false, cls: "Hunter", sub: "", lvl: 250, own: 500, grow: false, hunt: "solo", attrs: new Set(), res: new Set(), imm: new Set(), races: new Set() };
 let BLD_SETS = null;
 const bf = (v, d = 1) => v.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -3357,6 +3361,7 @@ function bldInit() {
   const $ = id => document.getElementById(id);
   $("bldClass").innerHTML = Object.keys(BLD_CLS).map(c => `<option value="${c}">${c}</option>`).join("");
   $("bldAttrs").innerHTML = BLD_ORDER.map(id => `<label class="bld-chk"><input type="checkbox" data-g="attrs" value="${id}">${escapeHtml(BA[id].l)}</label>`).join("");
+  $("bldImm").innerHTML = BLD_IMM.map(([k, l]) => `<label class="bld-chk"><input type="checkbox" data-g="imm" value="${k}">${l}</label>`).join("");
   $("bldRes").innerHTML = BLD_RES.map(([k, l]) => `<label class="bld-chk"><input type="checkbox" data-g="res" value="${k}">${l}</label>`).join("");
   const rc = {}; CARDS.all.forEach(c => c.races.forEach(r => { rc[r] = (rc[r] || 0) + 1; }));
   $("bldRaces").innerHTML = Object.keys(rc).sort((a, b) => rc[b] - rc[a] || a.localeCompare(b)).map(r => `<label class="bld-chk"><input type="checkbox" data-g="races" value="${escapeHtml(r)}">${escapeHtml(r)}</label>`).join("");
@@ -3387,7 +3392,7 @@ function bldRulesHtml() {
   const K = BLD_K;
   return `<ul class="bld-ul">
     <li><b>Peças (lendários):</b> cada atributo marcado vale até <b>${K.item} pontos</b>: o valor da peça no nível de item digitado (base + crescimento × nível) dividido pelo maior valor entre as 118 peças naquele nível (o "% de AP" de uma peça vira AP fixo: % × o AP total que você digitou). Atributos que a classe usa mas você não marcou valem ${K.core} do peso; a caçada soma +${K.boost} de peso a atributos de ${"sobrevivência"} (solo: vida, regeneração, roubo de vida, armadura, RM) ou de grupo (aceleração, cura e escudo, tenacidade, armadura, RM). Se o papel da peça (${"atirador, mago..."}) combina com a classe, +${K.role} ponto.</li>
-    <li><b>Cartas, estimativa em "% de dano":</b> bônus de dano contra uma raça marcada vale o próprio valor (ex.: +5% = 5 pontos); dano mágico contra raça só conta para classe de dano mágico; dano total conta sempre; dano em área vale ${K.aoe}; dano crítico só se você marcou crítico ou dano crítico; dano à distância só para classes que usam Distance Fighting (Hunter e Archer). Redução de dano de uma raça marcada vale ${K.raceRed} do valor; redução de um elemento marcado vale ${K.elemRed}.</li>
+    <li><b>Cartas, estimativa em "% de dano":</b> bônus de dano contra uma raça marcada vale o próprio valor (ex.: +5% = 5 pontos); dano mágico contra raça só conta para classe de dano mágico; dano total conta sempre; dano em área vale ${K.aoe}; dano crítico só se você marcou crítico ou dano crítico; dano à distância só para classes que usam Distance Fighting (Hunter e Archer). Redução de dano de uma raça marcada vale ${K.raceRed} do valor; redução de um elemento marcado vale ${K.elemRed}. <b>Imunidade a efeito</b> que você marcou em "Imunidades a efeitos" (Queimadura, Envenenamento, Enraizamento, Silêncio...) vale ${K.immun} pontos; duas cartas com a mesma imunidade não somam. Ela é separada da resistência ao dano do elemento: marcar Fogo em Resistências pontua as cartas de "−% dano de Fogo", e a imunidade a Queimadura só pontua se você marcar Queimadura (o Fogo causa dano de fogo; o Campo de Fogo deixa queimadura). Assumo o mesmo para Veneno (Envenenamento) por analogia, sem ter confirmado no jogo; o valor ${K.immun} é suposição minha.</li>
     <li><b>Cartas, atributos fixos:</b> AD/AP fixos viram "% do seu AD/AP total" (valor ÷ total digitado × 100); os demais atributos marcados valem até ${K.cardFlat} pontos, proporcional ao melhor valor entre todas as cartas.</li>
     <li><b>Baralho:</b> escolhe as 20 cartas uma a uma, sempre a de maior ganho, somando o ganho do conjunto (o nível maior de conjunto substitui o anterior, suposição). Ordem de escolha = ordem dos 4 grupos de 5. Uma carta por monstro. O baralho principal usa só cartas até Epic (as Lendárias são raras): elas aparecem depois, como opção de troca, dizendo qual carta do baralho cada uma substituiria e quantos pontos ganha. Carta Ultra: só 1 por baralho, também como opção de troca.</li>
   </ul>`;
@@ -3431,6 +3436,10 @@ function bldEffPts(e, ctx) {
   if (t === "raceBonus") return BLD.races.has(e.race) ? v : 0;
   if (t === "magicDamageBonus") return BLD.races.has(e.race) && c.dmg === "magic" ? v : 0;
   if (t === "raceReduction") return BLD.races.has(e.race) ? v * BLD_K.raceRed : 0;
+  if (t === "immunity") return BLD.imm.has(e.condition) ? BLD_K.immun : 0;
+  if (t === "stunImmunity") return BLD.imm.has("Stun") ? BLD_K.immun : 0;
+  if (t === "pushImmunity") return BLD.imm.has("Push") ? BLD_K.immun : 0;
+  if (t === "terrainSlowImmunity") return BLD.imm.has("TerrainSlow") ? BLD_K.immun : 0;
   if (t === "elementReduction" || t === "elementResist") return BLD.res.has(e.element) ? v * BLD_K.elemRed : 0;
   if (t === "allDamageBonus") return v;
   if (t === "aoeDamageBonus") return v * BLD_K.aoe;
@@ -3447,6 +3456,7 @@ function bldUltraHints(cls) { // Ultras que o site já recomenda à mão para a 
   Object.values(HUNTS).forEach(h => { const b = h.builds[cls]; if (b && b.ultra && !m.has(b.ultra.name)) m.set(b.ultra.name, b.ultra.why); });
   return m;
 }
+const bldImmKey = e => e.type === "immunity" ? e.condition : e.type === "stunImmunity" ? "Stun" : e.type === "pushImmunity" ? "Push" : e.type === "terrainSlowImmunity" ? "TerrainSlow" : null;
 function bldDeck(w) {
   const all = CARDS.all.filter(c => c.tier !== 6), mx = {};
   const pool = all.filter(c => c.tier <= 4), legends = all.filter(c => c.tier === 5); // baralho principal só até Epic; Lendárias viram opção de troca
@@ -3454,6 +3464,16 @@ function bldDeck(w) {
   const ctx = { w, mx }, base = new Map();
   all.forEach(c => base.set(c, c.effects.reduce((s, e) => s + bldEffPts(e, ctx), 0)));
   const sets = (BLD_SETS || []).map(s => ({ s, names: new Set(s.cards), n: 0 }));
+  // pontos que NÃO valem por sobreposição: uma segunda carta com a mesma imunidade
+  const ovl = new Map();
+  all.concat(CARDS.all.filter(c => c.tier === 6)).forEach(c => ovl.set(c, {
+    imm: c.effects.map(e => { const k = bldImmKey(e); return k ? { k, p: bldEffPts(e, ctx) } : null; }).filter(x => x && x.p > 0),
+  }));
+  const overlap = list => {
+    const cnt = {}; let loss = 0;
+    list.forEach(c => ovl.get(c).imm.forEach(x => { if (cnt[x.k]) loss += x.p; cnt[x.k] = (cnt[x.k] || 0) + 1; }));
+    return loss;
+  };
   const tierPts = (S, n) => { let b = null; S.s.bonuses.forEach(x => { if (x.count <= n) b = x; }); return b ? b.effects.reduce((a, e) => a + bldEffPts(e, ctx), 0) : 0; };
   const chosen = [], used = new Set();
   for (let i = 0; i < 20; i++) {
@@ -3461,7 +3481,7 @@ function bldDeck(w) {
     pool.forEach(c => {
       if (used.has(c.monsterName)) return;
       let setG = 0; sets.forEach(S => { if (S.names.has(c.monsterName)) setG += tierPts(S, S.n + 1) - tierPts(S, S.n); });
-      const g = base.get(c) + setG;
+      const cl = chosen.map(y => y.c), g = base.get(c) + setG - (overlap(cl.concat(c)) - overlap(cl));
       if (!best || g > best.g + 1e-9 || (Math.abs(g - best.g) <= 1e-9 && c.tier > best.c.tier)) best = { c, g, own: base.get(c), setG };
     });
     if (!best) break;
@@ -3470,7 +3490,7 @@ function bldDeck(w) {
   }
   const ultras = CARDS.all.filter(c => c.tier === 6);
   ultras.forEach(c => base.set(c, c.effects.reduce((t, e) => t + bldEffPts(e, ctx), 0)));
-  const score = list => list.reduce((t, c) => t + base.get(c), 0) + sets.reduce((t, S) => t + tierPts(S, list.filter(c => S.names.has(c.monsterName)).length), 0);
+  const score = list => list.reduce((t, c) => t + base.get(c), 0) - overlap(list) + sets.reduce((t, S) => t + tierPts(S, list.filter(c => S.names.has(c.monsterName)).length), 0);
   // cartas já obtidas (marcadas pelo usuário) entram na hora, na carta que menos perde (ou na da mesma criatura); as opções são recalculadas
   let cur = chosen.map(x => ({ c: x.c, g: x.g, setG: x.setG, forced: false }));
   const cards = () => cur.map(y => y.c), freeIdx = () => cur.map((y, i) => y.forced ? -1 : i).filter(i => i >= 0);
