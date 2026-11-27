@@ -1076,10 +1076,10 @@
     <p class="muted-note" id="bldDeckNote"></p>
     <div id="bldDeck"></div>
     <div class="section-title" style="margin-top:22px">Cartas Lendárias: opção de troca (difíceis de ter)</div>
-    <p class="muted-note">Cada troca é calculada sozinha, contra o baralho acima; duas trocas juntas podem não somar. Só aparecem as que aumentam os pontos. A pontuação não desconta as contrapartidas das cartas (ex.: −8% de vida máxima da Orshabaal): leia o texto de cada uma.</p>
+    <p class="muted-note">Cada troca é calculada sozinha, contra o baralho acima; duas trocas juntas podem não somar. Só aparecem as que aumentam os pontos. <b>Marque "Já tenho esta carta"</b> nas que você já obteve: ela entra no baralho na hora, no lugar da carta que menos perde, e as outras opções são recalculadas contra o novo baralho, para você ver se ainda faz sentido. A marcação fica salva neste navegador. A pontuação não desconta as contrapartidas das cartas (ex.: −8% de vida máxima da Orshabaal): leia o texto de cada uma.</p>
     <div class="card-tiles" id="bldSwaps"></div>
     <div class="section-title" style="margin-top:22px">Carta Ultra: opção de troca (só 1 por baralho)</div>
-    <p class="muted-note">Escolha no máximo uma. Os dados da Ultra são quase só texto da passiva, sem número, então a pontuação <b>não mede</b> a passiva: ela só mostra o que você perde em atributos ao tirar a carta indicada (a de menor perda). Primeiro vêm as Ultras que o site já recomenda à mão para a classe (nas abas Builds e Cartas p/ Hunt); julgue pela descrição. Esta troca é calculada contra o baralho principal, separada das Lendárias.</p>
+    <p class="muted-note">Escolha no máximo uma. Os dados da Ultra são quase só texto da passiva, sem número, então a pontuação <b>não mede</b> a passiva: ela só mostra o que você perde em atributos ao tirar a carta indicada (a de menor perda). Primeiro vêm as Ultras que o site já recomenda à mão para a classe (nas abas Builds e Cartas p/ Hunt); julgue pela descrição. Marque "Já tenho esta carta" na que você obteve: ela entra no baralho (já com as Lendárias marcadas) e as outras Ultras passam a disputar o lugar dela, porque só cabe uma.</p>
     <div class="card-tiles" id="bldUltra"></div>
     <details style="margin-top:10px"><summary class="muted-note" style="cursor:pointer">Todas as outras Ultras (<span id="bldUltraN"></span>)</summary><div class="card-tiles" id="bldUltraRest" style="margin-top:8px"></div></details>
   </div>
@@ -3340,7 +3340,7 @@ const BA = {
 const BLD_ORDER = Object.keys(BA);
 const BA_CARD = {}; BLD_ORDER.forEach(id => BA[id].card.forEach(a => { BA_CARD[a] = id; }));
 const BLD_RES = [["Ice", "Gelo"], ["Fire", "Fogo"], ["Energy", "Energia"], ["Death", "Morte"], ["Earth", "Terra"], ["Poison", "Veneno"]];
-let BLD = { ready: false, cls: "Hunter", sub: "", lvl: 250, own: 500, grow: false, hunt: "solo", attrs: new Set(), res: new Set(), races: new Set() };
+let BLD = { ownedLeg: new Set(), ownedUltra: null, ready: false, cls: "Hunter", sub: "", lvl: 250, own: 500, grow: false, hunt: "solo", attrs: new Set(), res: new Set(), races: new Set() };
 let BLD_SETS = null;
 const bf = (v, d = 1) => v.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -3349,9 +3349,11 @@ async function ensureBldLoaded() {
   if (!BLD_SETS) { try { BLD_SETS = (await (await fetch("cards.json")).json()).sets || []; } catch (e) { BLD_SETS = []; } }
 }
 
+function bldSaveOwned() { try { localStorage.setItem("bld_owned_cards", JSON.stringify({ leg: [...BLD.ownedLeg], ultra: BLD.ownedUltra })); } catch (e) {} }
 function bldInit() {
   if (BLD.ready) return;
   BLD.ready = true;
+  try { const o = JSON.parse(localStorage.getItem("bld_owned_cards") || "{}"); BLD.ownedLeg = new Set(o.leg || []); BLD.ownedUltra = o.ultra || null; } catch (e) {}
   const $ = id => document.getElementById(id);
   $("bldClass").innerHTML = Object.keys(BLD_CLS).map(c => `<option value="${c}">${c}</option>`).join("");
   $("bldAttrs").innerHTML = BLD_ORDER.map(id => `<label class="bld-chk"><input type="checkbox" data-g="attrs" value="${id}">${escapeHtml(BA[id].l)}</label>`).join("");
@@ -3366,6 +3368,8 @@ function bldInit() {
   $("bldGrow").addEventListener("change", e => { BLD.grow = e.target.checked; renderBld(); });
   document.querySelectorAll("input[name=bldHunt]").forEach(r => r.addEventListener("change", e => { BLD.hunt = e.target.value; renderBld(); }));
   $("bldWrap").addEventListener("change", e => {
+    const ow = e.target.dataset && e.target.dataset.own;
+    if (ow) { const id = Number(e.target.value); if (ow === "leg") { e.target.checked ? BLD.ownedLeg.add(id) : BLD.ownedLeg.delete(id); } else { BLD.ownedUltra = e.target.checked ? id : null; } bldSaveOwned(); renderBld(); return; }
     const g = e.target.dataset && e.target.dataset.g; if (!g) return;
     e.target.checked ? BLD[g].add(e.target.value) : BLD[g].delete(e.target.value); renderBld();
   });
@@ -3467,23 +3471,36 @@ function bldDeck(w) {
   const ultras = CARDS.all.filter(c => c.tier === 6);
   ultras.forEach(c => base.set(c, c.effects.reduce((t, e) => t + bldEffPts(e, ctx), 0)));
   const score = list => list.reduce((t, c) => t + base.get(c), 0) + sets.reduce((t, S) => t + tierPts(S, list.filter(c => S.names.has(c.monsterName)).length), 0);
-  const inDeck = chosen.map(x => x.c), s0 = score(inDeck), swaps = [];
-  legends.forEach(L => {
-    if (used.has(L.monsterName)) return; let b = null;
-    inDeck.forEach((x, i) => { const d = score(inDeck.map((y, j) => j === i ? L : y)) - s0; if (!b || d > b.d + 1e-9) b = { x, d }; });
-    if (b && b.d > 0.05) swaps.push({ c: L, out: b.x, d: b.d });
-  });
+  // cartas já obtidas (marcadas pelo usuário) entram na hora, na carta que menos perde (ou na da mesma criatura); as opções são recalculadas
+  let cur = chosen.map(x => ({ c: x.c, g: x.g, setG: x.setG, forced: false }));
+  const cards = () => cur.map(y => y.c), freeIdx = () => cur.map((y, i) => y.forced ? -1 : i).filter(i => i >= 0);
+  const bestSlot = (L, targets) => { const list = cards(), s = score(list); let b = null; targets.forEach(i => { const d = score(list.map((z, j) => j === i ? L : z)) - s; if (!b || d > b.d + 1e-9) b = { i, d }; }); return b; };
+  const force = (L, kind) => {
+    const same = kind === "leg" ? cur.findIndex(y => y.c.monsterName === L.monsterName && !y.forced) : -1; // a Ultra é um espaço à parte: não substitui a carta comum da mesma criatura
+    const b = same >= 0 ? bestSlot(L, [same]) : bestSlot(L, freeIdx()); if (!b) return;
+    cur[b.i] = { c: L, g: 0, setG: 0, forced: kind, out: cur[b.i].c, d: b.d };
+  };
+  legends.filter(c => BLD.ownedLeg.has(c.id)).map(L => ({ L, d: bestSlot(L, freeIdx()).d })).sort((a, b) => b.d - a.d).forEach(o => force(o.L, "leg"));
+  const ownedU = ultras.find(c => c.id === BLD.ownedUltra); if (ownedU) force(ownedU, "ultra");
+  const list = cards(), s0 = score(list);
+  cur.forEach((y, i) => { if (y.forced) y.g = s0 - score(list.filter((_, j) => j !== i)); });
+  const free = freeIdx(), uIdx = cur.findIndex(y => y.forced === "ultra"), usedNow = new Set(list.map(c => c.monsterName));
+  const opt = (L, targets) => { let b = null; targets.forEach(i => { const d = score(list.map((z, j) => j === i ? L : z)) - s0; if (!b || d > b.d + 1e-9) b = { x: list[i], d }; }); return b; };
+  const swaps = [];
+  legends.forEach(L => { if (BLD.ownedLeg.has(L.id) || usedNow.has(L.monsterName)) return; const b = opt(L, free); if (b && b.d > 0.05) swaps.push({ c: L, out: b.x, d: b.d }); });
   swaps.sort((a, b) => b.d - a.d);
-  // Ultra: só 1 por baralho; a passiva quase nunca tem número nos dados, então não é pontuada (d costuma ser ≤ 0: o que se perde)
-  const hints = bldUltraHints(BLD.cls), ultraSw = ultras.map(L => {
-    let b = null; inDeck.forEach((x, i) => { const d = score(inDeck.map((y, j) => j === i ? L : y)) - s0; if (!b || d > b.d + 1e-9) b = { x, d }; });
-    return { c: L, out: b.x, d: b.d, hint: hints.get(L.monsterName) || "" };
+  // Ultra: só 1 por baralho (marcar uma ultra obtida faz as outras disputarem o lugar dela); a passiva quase nunca tem número, então não é pontuada
+  const hints = bldUltraHints(BLD.cls), ultraSw = ultras.filter(L => !(ownedU && L.id === ownedU.id)).map(L => {
+    const b = opt(L, uIdx >= 0 ? [uIdx] : free); return { c: L, out: b.x, d: b.d, hint: hints.get(L.monsterName) || "" };
   });
   const ultraTop = ultraSw.filter(u => u.hint || u.d > 0.05).sort((a, b) => (b.hint ? 1 : 0) - (a.hint ? 1 : 0) || b.d - a.d);
   const ultraRest = ultraSw.filter(u => !ultraTop.includes(u));
-  return { swaps, ultraTop, ultraRest, chosen, sets: sets.filter(S => S.n >= 2).map(S => ({ family: S.s.family, n: S.n, total: S.s.cards.length })) };
+  const ownedLeg = cur.filter(y => y.forced === "leg"), ownedUltra = cur.find(y => y.forced === "ultra") || null;
+  const setsOut = sets.map(S => ({ family: S.s.family, n: list.filter(c => S.names.has(c.monsterName)).length, total: S.s.cards.length })).filter(S => S.n >= 2);
+  return { swaps, ultraTop, ultraRest, ownedLeg, ownedUltra, chosen: cur, sets: setsOut };
 }
 
+const hintsOf = c => bldUltraHints(BLD.cls).get(c.monsterName) || "";
 function renderBld(keepFocus) {
   bldInit();
   const $ = id => document.getElementById(id), c = BLD_CLS[BLD.cls];
@@ -3518,19 +3535,16 @@ function renderBld(keepFocus) {
   if (plan) { const ref = new Set(plan.slots.flat()); const n = flat.filter(m => ref.has(m)).length; cmp = ` Conferência: ${n} das 20 cartas coincidem com o baralho feito à mão na aba Cartas (${escapeHtml(plan.focus)}).`; }
   $("bldDeckNote").textContent = `Conjuntos com 2 cartas ou mais: ${deck.sets.map(s => `${s.family} ${s.n}/${s.total}`).join(", ") || "nenhum"}.${cmp}`;
   $("bldDeck").innerHTML = [0, 1, 2, 3].map(g => `<div class="card-group"><div class="card-group-title">${SLOT_TITLES[g]}</div><div class="card-tiles">${deck.chosen.slice(g * 5, g * 5 + 5).map(x => {
-    const t = cardTile(x.c, x.c.monsterName), tag = x.g > 0 ? `≈ ${bf(x.g)} pontos${x.setG > 0.001 ? ` (${bf(x.setG)} do conjunto)` : ""}` : "0 pontos: carta de preenchimento, sem relação com a build";
+    const t = cardTile(x.c, x.c.monsterName).replace('class="card-tile"', x.forced ? 'class="card-tile bld-top"' : 'class="card-tile"'), tag = x.forced ? `Já obtida: entrou no lugar de ${escapeHtml(cardLabel(x.out.monsterName))} (${x.d >= 0 ? "+" : "−"}${bf(Math.abs(x.d))} pontos na troca; contribui ≈ ${bf(x.g)}). Desmarque na seção abaixo para tirar.` : x.g > 0 ? `≈ ${bf(x.g)} pontos${x.setG > 0.001 ? ` (${bf(x.setG)} do conjunto)` : ""}` : "0 pontos: carta de preenchimento, sem relação com a build";
     return t.replace(/<\/div>$/, `<div class="muted-note">${tag}</div></div>`);
   }).join("")}</div></div>`).join("");
-  $("bldSwaps").innerHTML = deck.swaps.map(sw => {
-    const t = cardTile(sw.c, sw.c.monsterName), o = sw.out;
-    return t.replace(/<\/div>$/, `<div class="muted-note"><b>Entra no lugar de ${escapeHtml(cardLabel(o.monsterName))}</b>: +${bf(sw.d)} pontos</div></div>`);
-  }).join("") || '<p class="muted-note">Nenhuma carta Lendária aumenta os pontos desta build.</p>';
-  const ultraTile = u => {
-    const t = cardTile(u.c, u.c.monsterName), o = u.out;
-    return t.replace(/<\/div>$/, `${u.hint ? `<div class="d" style="color:var(--text)">Recomendada pelo site para ${escapeHtml(BLD.cls)}: ${escapeHtml(u.hint)}</div>` : ""}<div class="muted-note"><b>Entra no lugar de ${escapeHtml(cardLabel(o.monsterName))}</b>: ${u.d > 0.05 ? "+" + bf(u.d) + " pontos" : u.d < -0.05 ? "custa " + bf(-u.d) + " pontos de atributos (a passiva não é pontuada)" : "sem mudança nos pontos (a passiva não é pontuada)"}</div></div>`);
-  };
-  $("bldUltra").innerHTML = deck.ultraTop.map(ultraTile).join("") || '<p class="muted-note">O site não tem uma Ultra recomendada para esta classe; veja a lista abaixo.</p>';
-  $("bldUltraRest").innerHTML = deck.ultraRest.map(ultraTile).join("");
+  const ownBox = (kind, c, on) => `<label class="bld-chk" style="margin-top:6px"><input type="checkbox" data-own="${kind}" value="${c.id}"${on ? " checked" : ""}> Já tenho esta carta</label>`;
+  const lessGain = d => d > 0.05 ? "+" + bf(d) + " pontos" : d < -0.05 ? "custa " + bf(-d) + " pontos de atributos (a passiva não é pontuada)" : "sem mudança nos pontos (a passiva não é pontuada)";
+  const legTile = (c, out, d, on) => cardTile(c, c.monsterName).replace('class="card-tile"', on ? 'class="card-tile bld-top"' : 'class="card-tile"').replace(/<\/div>$/, `<div class="muted-note"><b>${on ? "Já no baralho, no lugar de" : "Entra no lugar de"} ${escapeHtml(cardLabel(out.monsterName))}</b>: ${d >= 0 ? "+" : "−"}${bf(Math.abs(d))} pontos</div>${ownBox("leg", c, on)}</div>`);
+  $("bldSwaps").innerHTML = deck.ownedLeg.map(y => legTile(y.c, y.out, y.d, true)).join("") + deck.swaps.map(sw => legTile(sw.c, sw.out, sw.d, false)).join("") || '<p class="muted-note">Nenhuma carta Lendária aumenta os pontos desta build.</p>';
+  const ultraTile = (u, on) => cardTile(u.c, u.c.monsterName).replace('class="card-tile"', on ? 'class="card-tile bld-top"' : 'class="card-tile"').replace(/<\/div>$/, `${u.hint ? `<div class="d" style="color:var(--text)">Recomendada pelo site para ${escapeHtml(BLD.cls)}: ${escapeHtml(u.hint)}</div>` : ""}<div class="muted-note"><b>${on ? "Já no baralho, no lugar de" : deck.ownedUltra ? "Trocaria a Ultra atual (" + escapeHtml(cardLabel(deck.ownedUltra.c.monsterName)) + "), no lugar de" : "Entra no lugar de"} ${escapeHtml(cardLabel(u.out.monsterName))}</b>: ${lessGain(u.d)}</div>${ownBox("ultra", u.c, on)}</div>`);
+  $("bldUltra").innerHTML = (deck.ownedUltra ? ultraTile({ c: deck.ownedUltra.c, out: deck.ownedUltra.out, d: deck.ownedUltra.d, hint: hintsOf(deck.ownedUltra.c) }, true) : "") + deck.ultraTop.map(u => ultraTile(u, false)).join("") || '<p class="muted-note">O site não tem uma Ultra recomendada para esta classe; veja a lista abaixo.</p>';
+  $("bldUltraRest").innerHTML = deck.ultraRest.map(u => ultraTile(u, false)).join("");
   $("bldUltraN").textContent = deck.ultraRest.length;
 }
 
