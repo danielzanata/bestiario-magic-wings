@@ -742,6 +742,21 @@
   .lgstat { font-size: 12.5px; line-height: 1.6; margin-top: 6px; }
   .lgstat b { font-variant-numeric: tabular-nums; }
   .lgbanner { background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.55; margin-bottom: 14px; }
+  .bld-cta { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; margin: 0 0 14px; padding: 12px 18px; border-radius: 12px; border: 1px solid var(--accent); background: var(--accent); color: var(--bg); cursor: pointer; text-align: left; font-family: inherit; box-shadow: 0 2px 10px var(--accent-soft); }
+  .bld-cta:hover { filter: brightness(1.08); }
+  .bld-cta.active { background: var(--accent-soft); color: var(--accent-ink); border-width: 2px; }
+  .bld-cta-t { font-family: "Cinzel", serif; font-size: 18px; font-weight: 700; letter-spacing: 0.02em; }
+  .bld-cta-s { font-size: 12.5px; opacity: 0.9; }
+  .bld-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px 14px; margin: 6px 0 14px; }
+  .bld-chk { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text); }
+  .bld-chk input { margin: 0; }
+  .bld-top { border-color: var(--accent-ink); }
+  .bld-warn { border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin: 10px 0 14px; font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .bld-ul { margin: 6px 0 0 18px; padding: 0; line-height: 1.5; }
+  #bldWrap select, #bldWrap input[type="number"] { font-family: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); }
+  #bldWrap input[type="number"] { width: 90px; }
+  .bld-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; margin: 10px 0; }
+  .bld-row label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-dim); }
   .alb-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
   .alb-bar input[type="search"], .alb-bar select { font-family: inherit; font-size: 13px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); min-width: 0; }
   .alb-bar input[type="search"] { flex: 1 1 180px; }
@@ -821,6 +836,8 @@
     </div>
   </div>
 </header>
+
+<button type="button" class="bld-cta" id="tabBld"><span class="bld-cta-t">Monte sua build</span><span class="bld-cta-s">Escolha a classe e o que você quer: o site ordena as peças lendárias e monta o baralho de 20 cartas</span></button>
 
 <nav class="tabs">
   <button class="tab-btn active" id="tabMonsters" type="button">Monstros</button>
@@ -1022,6 +1039,49 @@
     <div class="muted-note" id="legCount" style="margin-bottom:10px"></div>
     <div class="lgbanner" id="legBanner" hidden></div>
     <div class="card-tiles" id="legGrid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))"></div>
+  </div>
+</div>
+
+<div class="builds-wrap" id="bldWrap" hidden>
+  <div class="build-card">
+    <div class="build-card-head">
+      <h2>Monte sua build</h2>
+      <p class="build-desc">Escolha a classe, o que você quer e onde vai caçar. O site ordena as peças lendárias e monta um baralho de 20 cartas por <b>pontos</b>, com contas abertas (veja "Regras de pontuação" abaixo). Sem inteligência artificial e sem servidor: é o mesmo resultado sempre que você marca as mesmas caixas. As 12 classes estão liberadas; Hunter e Chemist foram as primeiras conferidas, as outras 10 usam regras iguais e ainda não foram validadas.</p>
+    </div>
+    <div class="bld-warn"><b>Leia isto:</b> o resultado é uma <b>classificação por pontos, não uma combinação ótima provada</b>. Não se sabe: se os bônus de carta somam ou multiplicam; se existe teto para cada atributo; como o jogo conta cada ponto de crítico, velocidade de ataque ou regeneração no dano real; se todo lendário cabe em qualquer um dos 5 espaços de equipamento (suponho que sim, como as outras abas); se o nível maior de um conjunto de cartas substitui ou soma o anterior (suponho que substitui). As escolhas de "atributos que a classe usa" (tiradas do foco do baralho de cada classe na aba Cartas e dos papéis das peças) e o peso de solo/grupo são suposições minhas. As habilidades de cada classe não entram na conta.</div>
+    <div class="bld-row">
+      <label>Classe<select id="bldClass"></select></label>
+      <label>Subclasse<select id="bldSub"></select></label>
+      <label>Nível dos itens<input id="bldLvl" type="number" min="1" max="999" value="250"></label>
+      <label><span id="bldOwnLbl">Seu AD total (opcional)</span><input id="bldOwn" type="number" min="50" value="500"></label>
+    </div>
+    <p class="build-desc" id="bldSubDesc"></p>
+    <div class="section-title">Atributos que você quer</div>
+    <div class="bld-grid" id="bldAttrs"></div>
+    <label class="bld-chk"><input type="checkbox" id="bldGrow"> Só peças que crescem por nível nos atributos marcados</label>
+    <div class="section-title">Caçada</div>
+    <div class="bld-grid"><label class="bld-chk"><input type="radio" name="bldHunt" value="solo" checked> Solo</label><label class="bld-chk"><input type="radio" name="bldHunt" value="group"> Grupo</label></div>
+    <div class="section-title">Resistências</div>
+    <div class="bld-grid" id="bldRes"></div>
+    <div class="section-title">Raça de monstro</div>
+    <div class="bld-grid" id="bldRaces"></div>
+    <details><summary class="section-title" style="cursor:pointer">Regras de pontuação</summary><div id="bldRules"></div></details>
+  </div>
+  <div class="build-card">
+    <div class="section-title">Peças lendárias que mais combinam (as 5 primeiras formam a build sugerida)</div>
+    <div class="build-stats" id="bldSum"></div>
+    <p class="muted-note">Os números "top 5 + cartas" somam os atributos marcados, supondo que itens e cartas somam e sem teto (não se sabe: por exemplo, se a chance de crítico passar de 100%, o excedente pode não servir). Só peças lendárias entram; itens comuns não foram pontuados. Botas são um espaço separado no jogo e não foram tratadas.</p>
+    <div class="card-tiles" id="bldItems"></div>
+    <div class="section-title" style="margin-top:22px">Baralho de 20 cartas</div>
+    <p class="muted-note" id="bldDeckNote"></p>
+    <div id="bldDeck"></div>
+    <div class="section-title" style="margin-top:22px">Cartas Lendárias: opção de troca (difíceis de ter)</div>
+    <p class="muted-note">Cada troca é calculada sozinha, contra o baralho acima; duas trocas juntas podem não somar. Só aparecem as que aumentam os pontos. A pontuação não desconta as contrapartidas das cartas (ex.: −8% de vida máxima da Orshabaal): leia o texto de cada uma.</p>
+    <div class="card-tiles" id="bldSwaps"></div>
+    <div class="section-title" style="margin-top:22px">Carta Ultra: opção de troca (só 1 por baralho)</div>
+    <p class="muted-note">Escolha no máximo uma. Os dados da Ultra são quase só texto da passiva, sem número, então a pontuação <b>não mede</b> a passiva: ela só mostra o que você perde em atributos ao tirar a carta indicada (a de menor perda). Primeiro vêm as Ultras que o site já recomenda à mão para a classe (nas abas Builds e Cartas p/ Hunt); julgue pela descrição. Esta troca é calculada contra o baralho principal, separada das Lendárias.</p>
+    <div class="card-tiles" id="bldUltra"></div>
+    <details style="margin-top:10px"><summary class="muted-note" style="cursor:pointer">Todas as outras Ultras (<span id="bldUltraN"></span>)</summary><div class="card-tiles" id="bldUltraRest" style="margin-top:8px"></div></details>
   </div>
 </div>
 
@@ -2446,6 +2506,7 @@ async function init() {
   document.getElementById("tabCards").addEventListener("click", () => switchTab("cards"));
   document.getElementById("tabFood").addEventListener("click", () => switchTab("food"));
   document.getElementById("tabLeg").addEventListener("click", () => switchTab("leg"));
+  document.getElementById("tabBld").addEventListener("click", () => switchTab("bld"));
   document.getElementById("tabClasses").addEventListener("click", () => switchTab("classes"));
   document.getElementById("tabHunts").addEventListener("click", () => switchTab("hunts"));
   document.getElementById("tabDeck").addEventListener("click", () => switchTab("deck"));
@@ -2488,19 +2549,21 @@ async function switchTab(tab) {
   document.getElementById("tabCards").classList.toggle("active", tab === "cards");
   document.getElementById("tabFood").classList.toggle("active", tab === "food");
   document.getElementById("tabLeg").classList.toggle("active", tab === "leg");
+  document.getElementById("tabBld").classList.toggle("active", tab === "bld");
   document.getElementById("tabClasses").classList.toggle("active", tab === "classes");
   document.getElementById("tabHunts").classList.toggle("active", tab === "hunts");
   document.getElementById("tabBalance").classList.toggle("active", tab === "balance");
   document.getElementById("tabDeck").classList.toggle("active", tab === "deck");
   document.querySelectorAll(".monsters-only").forEach(el => el.hidden = tab !== "monsters");
   document.querySelectorAll(".items-only").forEach(el => el.hidden = tab !== "items");
-  document.getElementById("toolbar").hidden = tab === "builds" || tab === "cards" || tab === "food" || tab === "leg" || tab === "classes" || tab === "hunts" || tab === "balance" || tab === "deck";
+  document.getElementById("toolbar").hidden = tab === "builds" || tab === "cards" || tab === "food" || tab === "leg" || tab === "bld" || tab === "classes" || tab === "hunts" || tab === "balance" || tab === "deck";
   document.getElementById("monstersTableWrap").hidden = tab !== "monsters";
   document.getElementById("itemsTableWrap").hidden = tab !== "items";
   document.getElementById("buildsWrap").hidden = tab !== "builds";
   document.getElementById("cardsWrap").hidden = tab !== "cards";
   document.getElementById("foodWrap").hidden = tab !== "food";
   document.getElementById("legWrap").hidden = tab !== "leg";
+  document.getElementById("bldWrap").hidden = tab !== "bld";
   document.getElementById("classesWrap").hidden = tab !== "classes";
   document.getElementById("huntsWrap").hidden = tab !== "hunts";
   document.getElementById("balanceWrap").hidden = tab !== "balance";
@@ -2514,6 +2577,7 @@ async function switchTab(tab) {
   if (tab === "cards") { await ensureCardsLoaded(); showCardSub(); return; }
   if (tab === "food") { await ensureFoodLoaded(); renderFood(); return; }
   if (tab === "leg") { await ensureLegLoaded(); renderLeg(); return; }
+  if (tab === "bld") { await ensureBldLoaded(); renderBld(); return; }
   if (tab === "classes") { await ensureItemsLoaded(); await ensureClassesLoaded(); renderClassesTab(); return; }
   if (tab === "hunts") { await ensureCardsLoaded(); renderHunts(); return; }
   if (tab === "balance") { await ensureBalanceLoaded(); renderBalance(); return; }
@@ -3232,6 +3296,242 @@ async function fillDrawerFood(m) {
     document.getElementById("fdQ").value = ing.name;
     renderFood();
   }));
+}
+
+// ---- Monte sua build: pontuação transparente, sem servidor e sem IA. Tudo é conta em cima de legendary.json e cards.json.
+// "core" = atributos que EU suponho que a classe usa (suposição); "roles" = papéis dos lendários que combinam (dados do jogo)
+// ranged = a classe usa Distance Fighting (campo skillBase de classes.json): só Hunter e Archer
+const BLD_CLS = {
+  Hunter: { dmg: "phys", ranged: true, core: ["ad", "as", "crit", "critdmg", "pen"], roles: ["marksman"], def: ["crit", "ad", "as"] },
+  Archer: { dmg: "phys", ranged: true, core: ["ad", "as", "crit", "pen"], roles: ["marksman", "assassin"], def: ["ad", "as", "crit"] },
+  Chemist: { dmg: "magic", ranged: false, core: ["ap", "ah", "regmp", "mana", "heal"], roles: ["mage", "Support"], def: ["ap", "ah", "regmp"] },
+  Sorcerer: { dmg: "magic", ranged: false, core: ["ap", "ah", "mana", "regmp"], roles: ["mage"], def: ["ap", "ah", "mana"] },
+  Druid: { dmg: "magic", ranged: false, core: ["ap", "ah", "heal", "regmp"], roles: ["mage", "Support"], def: ["ap", "ah", "heal"] },
+  Firecaller: { dmg: "magic", ranged: false, core: ["ap", "ah", "mana"], roles: ["mage", "Support"], def: ["ap", "ah"] },
+  Golemancer: { dmg: "magic", ranged: false, core: ["hp", "armor", "mr", "ap"], roles: ["tank", "mage"], def: ["hp", "armor", "mr"] },
+  Knight: { dmg: "phys", ranged: false, core: ["armor", "hp", "mr", "reghp"], roles: ["tank", "fighter"], def: ["armor", "hp", "mr"] },
+  Gravewarden: { dmg: "phys", ranged: false, core: ["ad", "dmg", "armor", "mr"], roles: ["fighter", "tank"], def: ["armor", "mr", "ad"] },
+  Lancer: { dmg: "phys", ranged: false, core: ["ad", "as", "hp", "steal"], roles: ["fighter", "assassin"], def: ["ad", "as", "hp"] },
+  Ninja: { dmg: "phys", ranged: false, core: ["ad", "as", "crit", "steal"], roles: ["assassin", "fighter"], def: ["ad", "as", "crit"] },
+  Chainmaster: { dmg: "phys", ranged: false, core: ["ad", "pen", "ah"], roles: ["assassin"], def: ["ad", "pen", "ah"] },
+};
+const BLD_K = { core: 0.25, boost: 0.3, item: 10, role: 1.5, cardFlat: 3, raceRed: 0.5, elemRed: 1, aoe: 0.5, pctHpMp: 0.5 };
+const BLD_HUNT = { solo: ["hp", "reghp", "steal", "armor", "mr"], group: ["ah", "heal", "tenacity", "armor", "mr"] };
+const BA = {
+  crit: { l: "Chance de crítico", leg: ["criticalStrikePercent"], card: ["PLAYERATTR_CRITICAL_STRIKE_PERCENT"] },
+  critdmg: { l: "Dano crítico", leg: ["criticalExtraDamageParcent"], card: [], eff: ["critDamageBonus"] },
+  as: { l: "Velocidade de ataque", leg: ["attackSpeed"], card: ["PLAYERATTR_ATTACK_SPEED"] },
+  ad: { l: "Dano de Ataque (AD)", leg: ["attackDamage"], card: ["PLAYERATTR_ATTACK_DAMAGE", "PLAYERATTR_ATTACK_DAMAGE_PERCENT"], flat: true },
+  ap: { l: "Poder de Habilidade (AP)", leg: ["abilityPower", "abilityPowerPercent"], card: ["PLAYERATTR_ABILITY_POWER", "PLAYERATTR_ABILITY_POWER_PERCENT"], flat: true },
+  ah: { l: "Aceleração de Habilidade", leg: ["abilityHaste"], card: ["PLAYERATTR_ABILITY_HASTE"] },
+  pen: { l: "Penetração", leg: ["unitaryArmorPen", "armorPenPercent", "unitaryMagicPen", "magicPenPercent"], card: ["PLAYERATTR_ARMOR_PEN_PERCENT", "PLAYERATTR_UNITARY_ARMOR_PEN", "PLAYERATTR_MAGIC_PEN_PERCENT", "PLAYERATTR_UNITARY_MAGIC_PEN"] },
+  dmg: { l: "Dano total (%)", leg: [], card: [], eff: ["allDamageBonus", "aoeDamageBonus", "rangedDamageBonus"] },
+  hp: { l: "Vida", leg: ["extrahp"], card: ["STAT_MAXHITPOINTS"], eff: ["hpPercent"] },
+  mana: { l: "Mana", leg: ["extramana"], card: [], eff: ["mpPercent"] },
+  regmp: { l: "Regeneração de mana", leg: ["regenMpPercent"], card: ["PLAYERATTR_REGEN_MP"] },
+  reghp: { l: "Regeneração de vida", leg: ["regenHpPercent", "regenHpOutOfCombat"], card: ["PLAYERATTR_REGEN_HP", "PLAYERATTR_REGEN_HP_OUTOFCOMBAT"] },
+  steal: { l: "Roubo de vida / Omnivamp", leg: ["lifeStealPercent", "omnivampPercent"], card: ["PLAYERATTR_LIFE_STEAL_PERCENT", "PLAYERATTR_OMNIVAMP_PERCENT"] },
+  heal: { l: "Cura e escudo", leg: ["healAndShieldPercent", "healAndShieldReceivedPercent"], card: ["PLAYERATTR_HEAL_AND_SHIELD_PERCENT", "PLAYERATTR_HEAL_SHIELD_RECEIVED_PERCENT", "PLAYERATTR_POTION_HEALING_BONUS"] },
+  armor: { l: "Armadura", leg: ["armor"], card: ["PLAYERATTR_ARMOR"] },
+  mr: { l: "Resistência Mágica", leg: ["magicResist"], card: ["PLAYERATTR_MAGIC_RESIST"] },
+  tenacity: { l: "Tenacidade", leg: ["tenacityPercent"], card: ["PLAYERATTR_TENACITY_PERCENT"] },
+  move: { l: "Velocidade de movimento", leg: ["moveSpeed", "moveSpeedPercent"], card: ["PLAYERATTR_MOVE_SPEED"] },
+};
+const BLD_ORDER = Object.keys(BA);
+const BA_CARD = {}; BLD_ORDER.forEach(id => BA[id].card.forEach(a => { BA_CARD[a] = id; }));
+const BLD_RES = [["Ice", "Gelo"], ["Fire", "Fogo"], ["Energy", "Energia"], ["Death", "Morte"], ["Earth", "Terra"], ["Poison", "Veneno"]];
+let BLD = { ready: false, cls: "Hunter", sub: "", lvl: 250, own: 500, grow: false, hunt: "solo", attrs: new Set(), res: new Set(), races: new Set() };
+let BLD_SETS = null;
+const bf = (v, d = 1) => v.toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+async function ensureBldLoaded() {
+  await ensureCardsLoaded(); await ensureLegLoaded(); await ensureClassesLoaded();
+  if (!BLD_SETS) { try { BLD_SETS = (await (await fetch("cards.json")).json()).sets || []; } catch (e) { BLD_SETS = []; } }
+}
+
+function bldInit() {
+  if (BLD.ready) return;
+  BLD.ready = true;
+  const $ = id => document.getElementById(id);
+  $("bldClass").innerHTML = Object.keys(BLD_CLS).map(c => `<option value="${c}">${c}</option>`).join("");
+  $("bldAttrs").innerHTML = BLD_ORDER.map(id => `<label class="bld-chk"><input type="checkbox" data-g="attrs" value="${id}">${escapeHtml(BA[id].l)}</label>`).join("");
+  $("bldRes").innerHTML = BLD_RES.map(([k, l]) => `<label class="bld-chk"><input type="checkbox" data-g="res" value="${k}">${l}</label>`).join("");
+  const rc = {}; CARDS.all.forEach(c => c.races.forEach(r => { rc[r] = (rc[r] || 0) + 1; }));
+  $("bldRaces").innerHTML = Object.keys(rc).sort((a, b) => rc[b] - rc[a] || a.localeCompare(b)).map(r => `<label class="bld-chk"><input type="checkbox" data-g="races" value="${escapeHtml(r)}">${escapeHtml(r)}</label>`).join("");
+  $("bldRules").innerHTML = bldRulesHtml();
+  $("bldClass").addEventListener("change", e => { BLD.cls = e.target.value; bldPickClass(); renderBld(); });
+  $("bldSub").addEventListener("change", e => { BLD.sub = e.target.value; renderBld(); });
+  $("bldLvl").addEventListener("input", e => { BLD.lvl = Math.max(1, Math.min(LEG.itemLevelMax, Number(e.target.value) || 1)); renderBld(true); });
+  $("bldOwn").addEventListener("input", e => { BLD.own = Math.max(50, Number(e.target.value) || 500); renderBld(true); });
+  $("bldGrow").addEventListener("change", e => { BLD.grow = e.target.checked; renderBld(); });
+  document.querySelectorAll("input[name=bldHunt]").forEach(r => r.addEventListener("change", e => { BLD.hunt = e.target.value; renderBld(); }));
+  $("bldWrap").addEventListener("change", e => {
+    const g = e.target.dataset && e.target.dataset.g; if (!g) return;
+    e.target.checked ? BLD[g].add(e.target.value) : BLD[g].delete(e.target.value); renderBld();
+  });
+  bldPickClass();
+}
+function bldPickClass() {
+  const c = BLD_CLS[BLD.cls], pick = SUB_PICKS[BLD.cls];
+  BLD.attrs = new Set(c.def);
+  document.querySelectorAll('#bldAttrs input').forEach(i => { i.checked = BLD.attrs.has(i.value); });
+  const subs = pick ? [pick.best.sub, ...pick.alts.map(a => a.sub)] : [];
+  BLD.sub = subs[0] || "";
+  document.getElementById("bldSub").innerHTML = subs.map((s, i) => `<option value="${s}">${s}${i === 0 ? " (sugerida)" : ""}</option>`).join("");
+}
+function bldRulesHtml() {
+  const K = BLD_K;
+  return `<ul class="bld-ul">
+    <li><b>Peças (lendários):</b> cada atributo marcado vale até <b>${K.item} pontos</b>: o valor da peça no nível de item digitado (base + crescimento × nível) dividido pelo maior valor entre as 118 peças naquele nível (o "% de AP" de uma peça vira AP fixo: % × o AP total que você digitou). Atributos que a classe usa mas você não marcou valem ${K.core} do peso; a caçada soma +${K.boost} de peso a atributos de ${"sobrevivência"} (solo: vida, regeneração, roubo de vida, armadura, RM) ou de grupo (aceleração, cura e escudo, tenacidade, armadura, RM). Se o papel da peça (${"atirador, mago..."}) combina com a classe, +${K.role} ponto.</li>
+    <li><b>Cartas, estimativa em "% de dano":</b> bônus de dano contra uma raça marcada vale o próprio valor (ex.: +5% = 5 pontos); dano mágico contra raça só conta para classe de dano mágico; dano total conta sempre; dano em área vale ${K.aoe}; dano crítico só se você marcou crítico ou dano crítico; dano à distância só para classes que usam Distance Fighting (Hunter e Archer). Redução de dano de uma raça marcada vale ${K.raceRed} do valor; redução de um elemento marcado vale ${K.elemRed}.</li>
+    <li><b>Cartas, atributos fixos:</b> AD/AP fixos viram "% do seu AD/AP total" (valor ÷ total digitado × 100); os demais atributos marcados valem até ${K.cardFlat} pontos, proporcional ao melhor valor entre todas as cartas.</li>
+    <li><b>Baralho:</b> escolhe as 20 cartas uma a uma, sempre a de maior ganho, somando o ganho do conjunto (o nível maior de conjunto substitui o anterior, suposição). Ordem de escolha = ordem dos 4 grupos de 5. Uma carta por monstro. O baralho principal usa só cartas até Epic (as Lendárias são raras): elas aparecem depois, como opção de troca, dizendo qual carta do baralho cada uma substituiria e quantos pontos ganha. Carta Ultra: só 1 por baralho, também como opção de troca.</li>
+  </ul>`;
+}
+
+function bldWeights() {
+  const c = BLD_CLS[BLD.cls], w = {};
+  BLD_ORDER.forEach(id => { w[id] = (BLD.attrs.has(id) ? 1 : 0) + (c.core.includes(id) ? BLD_K.core : 0) + (BLD_HUNT[BLD.hunt].includes(id) ? BLD_K.boost : 0); });
+  return w;
+}
+
+function bldItems(w) {
+  const lvl = BLD.lvl, c = BLD_CLS[BLD.cls], mx = {};
+  LEG.pieces.forEach(p => Object.keys(p.base).forEach(k => { const v = stVal(p.base[k], p.scale[k], lvl); if (v > (mx[k] || 0)) mx[k] = v; }));
+  const keysChecked = new Set(); BLD.attrs.forEach(id => BA[id].leg.forEach(k => keysChecked.add(k)));
+  let list = LEG.pieces.map(p => {
+    let tot = 0; const parts = [];
+    BLD_ORDER.forEach(id => {
+      if (!w[id]) return; let n = 0;
+      BA[id].leg.forEach(k => { if (!(k in p.base)) return; if (k === "abilityPowerPercent") n += stVal(p.base[k], p.scale[k], lvl) / 100 * BLD.own / (mx.abilityPower || 1); else if (mx[k]) n += stVal(p.base[k], p.scale[k], lvl) / mx[k]; });
+      if (n) { const pt = w[id] * n * BLD_K.item; tot += pt; parts.push([BA[id].l, pt]); }
+    });
+    if (tot > 0 && p.roles.some(r => c.roles.includes(r))) { tot += BLD_K.role; parts.push(["Papel da peça", BLD_K.role]); }
+    const grows = Object.keys(p.scale).some(k => keysChecked.has(k) && p.scale[k] > 0);
+    return { p, tot, parts, grows };
+  });
+  if (BLD.grow) list = list.filter(x => x.grows);
+  list = list.filter(x => x.tot > 0).sort((a, b) => b.tot - a.tot || a.p.name.localeCompare(b.p.name));
+  return list;
+}
+
+function bldEffPts(e, ctx) {
+  const c = BLD_CLS[BLD.cls], w = ctx.w, t = e.type, v = e.value || 0;
+  if (e.race && t !== "raceBonus" && t !== "magicDamageBonus" && t !== "raceReduction" && !BLD.races.has(e.race)) return 0;
+  if (t === "stat") {
+    const a = e.attr || e.stat, id = BA_CARD[a]; if (!id || !w[id]) return 0;
+    if (BA[id].flat && !/PERCENT$/.test(a)) return v / BLD.own * 100 * w[id];
+    if (BA[id].flat) return v * w[id];
+    return v / (ctx.mx[a] || 1) * BLD_K.cardFlat * w[id];
+  }
+  if (t === "raceBonus") return BLD.races.has(e.race) ? v : 0;
+  if (t === "magicDamageBonus") return BLD.races.has(e.race) && c.dmg === "magic" ? v : 0;
+  if (t === "raceReduction") return BLD.races.has(e.race) ? v * BLD_K.raceRed : 0;
+  if (t === "elementReduction" || t === "elementResist") return BLD.res.has(e.element) ? v * BLD_K.elemRed : 0;
+  if (t === "allDamageBonus") return v;
+  if (t === "aoeDamageBonus") return v * BLD_K.aoe;
+  if (t === "rangedDamageBonus") return c.ranged ? v : 0;
+  if (t === "critDamageBonus") return BLD.attrs.has("crit") || BLD.attrs.has("critdmg") ? v : 0;
+  if (t === "hpPercent") return (w.hp || 0) * v * BLD_K.pctHpMp;
+  if (t === "mpPercent") return (w.mana || 0) * v * BLD_K.pctHpMp;
+  return 0; // proc, ultraPassive, imunidades, XP, loot, dano de elemento: não pontuados (não sei a conta)
+}
+
+function bldUltraHints(cls) { // Ultras que o site já recomenda à mão para a classe (aba Builds e aba Cartas p/ Hunt)
+  const m = new Map();
+  Object.keys(BUILD_CARDS).forEach(k => { if (k.startsWith(cls.toLowerCase() + "_")) { const u = BUILD_CARDS[k].ultra; if (u && !m.has(u.name)) m.set(u.name, u.why); } });
+  Object.values(HUNTS).forEach(h => { const b = h.builds[cls]; if (b && b.ultra && !m.has(b.ultra.name)) m.set(b.ultra.name, b.ultra.why); });
+  return m;
+}
+function bldDeck(w) {
+  const all = CARDS.all.filter(c => c.tier !== 6), mx = {};
+  const pool = all.filter(c => c.tier <= 4), legends = all.filter(c => c.tier === 5); // baralho principal só até Epic; Lendárias viram opção de troca
+  all.forEach(c => c.effects.forEach(e => { if (e.type === "stat") { const a = e.attr || e.stat; if ((e.value || 0) > (mx[a] || 0)) mx[a] = e.value; } }));
+  const ctx = { w, mx }, base = new Map();
+  all.forEach(c => base.set(c, c.effects.reduce((s, e) => s + bldEffPts(e, ctx), 0)));
+  const sets = (BLD_SETS || []).map(s => ({ s, names: new Set(s.cards), n: 0 }));
+  const tierPts = (S, n) => { let b = null; S.s.bonuses.forEach(x => { if (x.count <= n) b = x; }); return b ? b.effects.reduce((a, e) => a + bldEffPts(e, ctx), 0) : 0; };
+  const chosen = [], used = new Set();
+  for (let i = 0; i < 20; i++) {
+    let best = null;
+    pool.forEach(c => {
+      if (used.has(c.monsterName)) return;
+      let setG = 0; sets.forEach(S => { if (S.names.has(c.monsterName)) setG += tierPts(S, S.n + 1) - tierPts(S, S.n); });
+      const g = base.get(c) + setG;
+      if (!best || g > best.g + 1e-9 || (Math.abs(g - best.g) <= 1e-9 && c.tier > best.c.tier)) best = { c, g, own: base.get(c), setG };
+    });
+    if (!best) break;
+    used.add(best.c.monsterName); sets.forEach(S => { if (S.names.has(best.c.monsterName)) S.n++; });
+    chosen.push(best);
+  }
+  const ultras = CARDS.all.filter(c => c.tier === 6);
+  ultras.forEach(c => base.set(c, c.effects.reduce((t, e) => t + bldEffPts(e, ctx), 0)));
+  const score = list => list.reduce((t, c) => t + base.get(c), 0) + sets.reduce((t, S) => t + tierPts(S, list.filter(c => S.names.has(c.monsterName)).length), 0);
+  const inDeck = chosen.map(x => x.c), s0 = score(inDeck), swaps = [];
+  legends.forEach(L => {
+    if (used.has(L.monsterName)) return; let b = null;
+    inDeck.forEach((x, i) => { const d = score(inDeck.map((y, j) => j === i ? L : y)) - s0; if (!b || d > b.d + 1e-9) b = { x, d }; });
+    if (b && b.d > 0.05) swaps.push({ c: L, out: b.x, d: b.d });
+  });
+  swaps.sort((a, b) => b.d - a.d);
+  // Ultra: só 1 por baralho; a passiva quase nunca tem número nos dados, então não é pontuada (d costuma ser ≤ 0: o que se perde)
+  const hints = bldUltraHints(BLD.cls), ultraSw = ultras.map(L => {
+    let b = null; inDeck.forEach((x, i) => { const d = score(inDeck.map((y, j) => j === i ? L : y)) - s0; if (!b || d > b.d + 1e-9) b = { x, d }; });
+    return { c: L, out: b.x, d: b.d, hint: hints.get(L.monsterName) || "" };
+  });
+  const ultraTop = ultraSw.filter(u => u.hint || u.d > 0.05).sort((a, b) => (b.hint ? 1 : 0) - (a.hint ? 1 : 0) || b.d - a.d);
+  const ultraRest = ultraSw.filter(u => !ultraTop.includes(u));
+  return { swaps, ultraTop, ultraRest, chosen, sets: sets.filter(S => S.n >= 2).map(S => ({ family: S.s.family, n: S.n, total: S.s.cards.length })) };
+}
+
+function renderBld(keepFocus) {
+  bldInit();
+  const $ = id => document.getElementById(id), c = BLD_CLS[BLD.cls];
+  if (!keepFocus) { $("bldLvl").value = BLD.lvl; $("bldOwn").value = BLD.own; }
+  $("bldOwnLbl").textContent = c.dmg === "magic" ? "Seu AP total (opcional)" : "Seu AD total (opcional)";
+  $("bldClass").value = BLD.cls; $("bldSub").value = BLD.sub;
+  // subclasse: descrição curta do que ela serve para esta classe
+  const pick = SUB_PICKS[BLD.cls], isBest = pick && pick.best.sub === BLD.sub;
+  const why = pick ? (isBest ? pick.best.why : ((pick.alts.find(a => a.sub === BLD.sub) || {}).why || "")) : "";
+  const sp = SUB_PASSIVES[BLD.sub];
+  $("bldSubDesc").innerHTML = `<b>${escapeHtml(BLD.sub)}</b>${sp ? ` — passiva <i>${escapeHtml(sp.passive)}</i>: ${escapeHtml(sp.value)}` : ""}<br>${escapeHtml(why)}<br><span class="muted-note">Para ${escapeHtml(BLD.cls)}. A subclasse não muda a pontuação nesta versão; é só leitura (valores no nível 80).</span>`;
+  const w = bldWeights(), items = bldItems(w), top = items.slice(0, 5), deck = bldDeck(w);
+  // ---- itens
+  const pieceHtml = (x, i) => {
+    const p = x.p, rows = [];
+    BLD_ORDER.forEach(id => { if (!w[id] || !BA[id].leg.length) return; BA[id].leg.forEach(k => { if (k in p.base) { const per = p.scale[k] || 0; rows.push(`<div class="lgstat">${escapeHtml(STAT_PT[k] || k)}: <b>${stFmt(k, stVal(p.base[k], per, BLD.lvl))}</b>${per ? ` <span class="muted-note">(+${fmtPer(per)} por nível)</span>` : ""}</div>`); } }); });
+    return `<div class="card-tile${i < 5 ? " bld-top" : ""}"><div class="n">${spr("items", p.id, 40)}<span>${escapeHtml(p.name)}</span> <span class="card-tier">${bf(x.tot)} pontos</span>${i < 5 ? ' <span class="card-tier">Top 5</span>' : ""}</div>${rows.join("")}<div class="muted-note" style="margin-top:4px">${x.parts.map(([l, v]) => `${escapeHtml(l)} ${bf(v)}`).join(" + ")}</div>${p.lootFrom ? `<div class="muted-note">Cai de: ${escapeHtml(p.lootFrom)}</div>` : ""}</div>`;
+  };
+  $("bldItems").innerHTML = items.slice(0, 15).map(pieceHtml).join("") || '<p class="muted-note">Marque ao menos um atributo.</p>';
+  // ---- soma da build (itens + cartas), supondo que somam
+  const sum = [];
+  BLD.attrs.forEach(id => {
+    const a = BA[id]; if (!a.leg.length && !a.card.length) return;
+    const it = top.reduce((s, x) => s + a.leg.reduce((t, k) => t + (k in x.p.base ? stVal(x.p.base[k], x.p.scale[k], BLD.lvl) : 0), 0), 0);
+    const cd = deck.chosen.reduce((s, x) => s + x.c.effects.reduce((t, e) => t + (e.type === "stat" && a.card.includes(e.attr || e.stat) ? e.value : 0), 0), 0);
+    sum.push(`<div class="stat-pill"><div class="n">${fdNum(Math.floor(it))} + ${fdNum(cd)}</div><div class="l">${escapeHtml(a.l)}: top 5 + cartas</div></div>`);
+  });
+  $("bldSum").innerHTML = sum.join("") || "";
+  // ---- baralho
+  const flat = deck.chosen.map(x => x.c.monsterName), plan = CARD_PLANS[BLD.cls];
+  let cmp = "";
+  if (plan) { const ref = new Set(plan.slots.flat()); const n = flat.filter(m => ref.has(m)).length; cmp = ` Conferência: ${n} das 20 cartas coincidem com o baralho feito à mão na aba Cartas (${escapeHtml(plan.focus)}).`; }
+  $("bldDeckNote").textContent = `Conjuntos com 2 cartas ou mais: ${deck.sets.map(s => `${s.family} ${s.n}/${s.total}`).join(", ") || "nenhum"}.${cmp}`;
+  $("bldDeck").innerHTML = [0, 1, 2, 3].map(g => `<div class="card-group"><div class="card-group-title">${SLOT_TITLES[g]}</div><div class="card-tiles">${deck.chosen.slice(g * 5, g * 5 + 5).map(x => {
+    const t = cardTile(x.c, x.c.monsterName), tag = x.g > 0 ? `≈ ${bf(x.g)} pontos${x.setG > 0.001 ? ` (${bf(x.setG)} do conjunto)` : ""}` : "0 pontos: carta de preenchimento, sem relação com a build";
+    return t.replace(/<\/div>$/, `<div class="muted-note">${tag}</div></div>`);
+  }).join("")}</div></div>`).join("");
+  $("bldSwaps").innerHTML = deck.swaps.map(sw => {
+    const t = cardTile(sw.c, sw.c.monsterName), o = sw.out;
+    return t.replace(/<\/div>$/, `<div class="muted-note"><b>Entra no lugar de ${escapeHtml(cardLabel(o.monsterName))}</b>: +${bf(sw.d)} pontos</div></div>`);
+  }).join("") || '<p class="muted-note">Nenhuma carta Lendária aumenta os pontos desta build.</p>';
+  const ultraTile = u => {
+    const t = cardTile(u.c, u.c.monsterName), o = u.out;
+    return t.replace(/<\/div>$/, `${u.hint ? `<div class="d" style="color:var(--text)">Recomendada pelo site para ${escapeHtml(BLD.cls)}: ${escapeHtml(u.hint)}</div>` : ""}<div class="muted-note"><b>Entra no lugar de ${escapeHtml(cardLabel(o.monsterName))}</b>: ${u.d > 0.05 ? "+" + bf(u.d) + " pontos" : u.d < -0.05 ? "custa " + bf(-u.d) + " pontos de atributos (a passiva não é pontuada)" : "sem mudança nos pontos (a passiva não é pontuada)"}</div></div>`);
+  };
+  $("bldUltra").innerHTML = deck.ultraTop.map(ultraTile).join("") || '<p class="muted-note">O site não tem uma Ultra recomendada para esta classe; veja a lista abaixo.</p>';
+  $("bldUltraRest").innerHTML = deck.ultraRest.map(ultraTile).join("");
+  $("bldUltraN").textContent = deck.ultraRest.length;
 }
 
 // ---- Comida: receitas, efeitos e ingredientes (food.json, gerado do arquivo food-buffs do jogo)
